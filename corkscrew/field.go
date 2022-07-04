@@ -18,8 +18,26 @@ type Field struct {
   ShowMathy                           bool
 }
 
-func (f *Field) Coordinate(t *Tile, pt *image.Point) Vec2 {
+func (f *Field) mkTile(w, h int, rw, rh, centerx, centery float32) *Tile {
+  return NewTile(w, h , rw, rh, centerx, centery, f)
+}
+
+
+func (f *Field) Coordinate(t *Tile, pt image.Point) Vec2 {
   return Coordinate(t, pt, f.ShowMathy)
+}
+
+func (f *Field) FBounds(width, height float32) (Vec2, Vec2) {
+  var min, max Vec2
+  if f.ShowMathy {
+    min = V2(-width / 2.0, height / 2.0)
+    max = V2(width / 2.0, -height / 2.0)
+  } else {
+    min = V2(-width / 2.0, height / 2.0)
+    max = V2(width / 2.0, -height / 2.0)
+  }
+
+  return min, max
 }
 
 func NewField(bounds image.Rectangle, width, height float32) *Field {     // (0,0,800,600), 100.0

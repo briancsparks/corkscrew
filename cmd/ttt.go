@@ -16,7 +16,7 @@ var tttCmd = &cobra.Command{
 
   Run: func(cmd *cobra.Command, args []string) {
     fmt.Println("ttt called")
-    corkscrew.ShowMain()
+    _ = corkscrew.ShowMain()
   },
 }
 

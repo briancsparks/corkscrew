@@ -21,12 +21,17 @@ var (
 
 var userDispWidth, userDispHeight int
 var userDomainWidth, userRangeHeight float32
-var field   *Field
-var joe     *Joe
+var field           *Field
+var joe             *Joe
+var mandel          *MandelbrotTile
+var tilechan         chan *Tile
+var quit             chan struct{}
 
 func init() {
   //c := colorful.WarmColor()
   //draw.Draw(tile, tile.Bounds(), &image.Uniform{C: color.RGBA{R: uint8(c.R * 255), G: uint8(c.G * 255), B: uint8(c.B * 255), A: 255}}, image.ZP, draw.Src)
+
+  quit = make(chan struct{})
 
   // Get from cli
   userDispWidth = 800
@@ -34,12 +39,26 @@ func init() {
   userDomainWidth = 100.0
   userRangeHeight = 100.0
 
-  field = NewField(image.Rectangle{Max: image.Point{X: userDispWidth, Y: userDispHeight}}, userDomainWidth, userRangeHeight)
-  joe   = NewJoe(field)
+  userRect := image.Rectangle{Max: image.Point{X: userDispWidth, Y: userDispHeight}}
+  field   = NewField(userRect, userDomainWidth, userRangeHeight)
+  joe     = NewJoe(field)
+
+  minV2, maxV2 := field.FBounds(userDomainWidth, userRangeHeight)
+
+  mandel  = NewMandelbrotTile(minV2, maxV2, userRect)
 }
 
-func ShowMain() {
+func ShowMain() error {
+
+  tilechan, err := joe.Run(quit)
+  if err != nil {
+    return err
+  }
+
+  mandel.Run(quit, field, tilechan)
+
   p5.Run(setupP5, drawP5)
+  return nil
 }
 
 func setupP5() {
