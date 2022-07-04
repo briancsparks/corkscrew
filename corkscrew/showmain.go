@@ -36,16 +36,18 @@ func init() {
   // Get from cli
   userDispWidth = 800
   userDispHeight = 600
-  userDomainWidth = 100.0
-  userRangeHeight = 100.0
+  //userDomainWidth = 100.0
+  //userRangeHeight = 100.0
+  userDomainWidth = 3.0
+  userRangeHeight = 2.0
 
   userRect := image.Rectangle{Max: image.Point{X: userDispWidth, Y: userDispHeight}}
   field   = NewField(userRect, userDomainWidth, userRangeHeight)
   joe     = NewJoe(field)
 
-  minV2, maxV2 := field.FBounds(userDomainWidth, userRangeHeight)
+  fmin, fmax := field.FBounds(userDomainWidth, userRangeHeight)
 
-  mandel  = NewMandelbrotTile(minV2, maxV2, userRect, joe)
+  mandel  = NewMandelbrotTile(fmin, fmax, userRect, joe)
 }
 
 func ShowMain() error {

@@ -33,8 +33,8 @@ func (f *Field) FBounds(width, height float32) (Vec2, Vec2) {
     min = V2(-width / 2.0, height / 2.0)
     max = V2(width / 2.0, -height / 2.0)
   } else {
-    min = V2(-width / 2.0, height / 2.0)
-    max = V2(width / 2.0, -height / 2.0)
+    min = V2(-width / 2.0, -height / 2.0)
+    max = V2(width / 2.0, height / 2.0)
   }
 
   return min, max

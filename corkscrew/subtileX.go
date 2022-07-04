@@ -9,7 +9,7 @@ func init() {
 
 }
 
-type SubTilizer struct {
+type SubTilizerX struct {
   Field           *Field
   ParentTile      *Tile
 
@@ -21,14 +21,14 @@ type SubTilizer struct {
   currPoint image.Point
 }
 
-func NewSubTilizer(parent *Tile, field *Field) *SubTilizer {
-  return &SubTilizer{
+func NewSubTilizerX(parent *Tile, field *Field) *SubTilizerX {
+  return &SubTilizerX{
     Field:        field,
     ParentTile:   parent,
   }
 }
 
-//func (st *SubTilizer) NextX() (Vec2, image.Point) {
+//func (st *SubTilizerX) NextX() (Vec2, image.Point) {
 //  index := st.CurrentIndex + 1
 //  p := st.ParentTile
 //  pt := Coord2d(&p.Rect, index)
@@ -39,18 +39,18 @@ func NewSubTilizer(parent *Tile, field *Field) *SubTilizer {
 //  return st.currVec2, st.currPoint
 //}
 
-func (st *SubTilizer) Next() (Vec2, image.Point) {
+func (st *SubTilizerX) Next() (Vec2, image.Point) {
   v, pt, index := st.at(st.CurrentIndex + 1)
   st.currVec2, st.currPoint, st.CurrentIndex = v, pt, index
 
   return st.currVec2, st.currPoint
 }
 
-func (st *SubTilizer) Current() (Vec2, image.Point) {
+func (st *SubTilizerX) Current() (Vec2, image.Point) {
   return st.currVec2, st.currPoint
 }
 
-func (st *SubTilizer) at(index int) (Vec2, image.Point, int) {
+func (st *SubTilizerX) at(index int) (Vec2, image.Point, int) {
   p := st.ParentTile
   pt := Coord2d(&p.Rect, index)
   x, y := Coordinate4(p.Min, p.Max, &p.Rect, pt, st.Field.ShowMathy)
@@ -58,7 +58,7 @@ func (st *SubTilizer) at(index int) (Vec2, image.Point, int) {
   return Vec2{x,y}, pt, index
 }
 
-func (st *SubTilizer) validIndex(index int) bool {
+func (st *SubTilizerX) validIndex(index int) bool {
   r := st.ParentTile.Rect
   area := r.Dx() * r.Dy()
 

@@ -42,16 +42,18 @@ func (j *Joe) Run(quit chan struct{}) (chan *Tile, error) {
 
 
   go func() {
-    select {
-    case t := <-ch:
-      //j.Tiles = append(j.Tiles, t)
-      j.AppendTile(t)
+    for {
+      select {
+      case t := <-ch:
+        //j.Tiles = append(j.Tiles, t)
+        j.AppendTile(t)
 
-    case msg := <- j.dataChannels.messages:
-      j.message = msg
+      case msg := <-j.dataChannels.messages:
+        j.message = msg
 
-    case <- quit:
-      break
+      case <-quit:
+        break
+      }
     }
   }()
 
