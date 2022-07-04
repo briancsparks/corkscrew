@@ -3,6 +3,7 @@ package corkscrew
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 import (
+  "fmt"
   "github.com/go-p5/p5"
   "sync"
 )
@@ -10,13 +11,25 @@ import (
 type Joe struct {
   Field *Field
   Tiles []*Tile
+  message string
+
+  dataChannels DataChannels
 
   lock sync.RWMutex
+}
+
+type DataChannels struct {
+  tiles     chan *Tile
+  messages  chan string
 }
 
 func NewJoe(f *Field) *Joe {
   j := &Joe{
     Field: f,
+  }
+  j.dataChannels = DataChannels{
+    tiles: make(chan *Tile),
+    messages: make(chan string),
   }
 
   j.Tiles = append(j.Tiles, NewTile(70, 70, 5.0, 5.0, 0.0, 0.0, f))
@@ -27,11 +40,15 @@ func NewJoe(f *Field) *Joe {
 func (j *Joe) Run(quit chan struct{}) (chan *Tile, error) {
   ch := make(chan *Tile)
 
+
   go func() {
     select {
     case t := <-ch:
       //j.Tiles = append(j.Tiles, t)
       j.AppendTile(t)
+
+    case msg := <- j.dataChannels.messages:
+      j.message = msg
 
     case <- quit:
       break
@@ -56,5 +73,8 @@ func (j *Joe) Render() {
   for _, tile := range j.Tiles {
     p5.DrawImage(tile.Img, float64(tile.Min.X), float64(tile.Min.Y))
   }
+
+  p5.TextSize(24)
+  p5.Text(fmt.Sprintf("%s", j.message), 10, 300)
 }
 

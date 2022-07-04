@@ -45,7 +45,7 @@ func init() {
 
   minV2, maxV2 := field.FBounds(userDomainWidth, userRangeHeight)
 
-  mandel  = NewMandelbrotTile(minV2, maxV2, userRect)
+  mandel  = NewMandelbrotTile(minV2, maxV2, userRect, joe)
 }
 
 func ShowMain() error {

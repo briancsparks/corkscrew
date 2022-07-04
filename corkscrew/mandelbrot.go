@@ -13,9 +13,13 @@ type MandelbrotTile struct {
   //X, Y   float64
   Min, Max Vec2
   Bounds image.Rectangle
+
+  joe *Joe
 }
 
-func NewMandelbrotTile(min, max Vec2/*, x, y float64*/, bounds image.Rectangle) *MandelbrotTile {
+// TODO: remove Joe
+
+func NewMandelbrotTile(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, joe *Joe) *MandelbrotTile {
   m := &MandelbrotTile{
     //X:      x,
     //Y:      y,
@@ -23,6 +27,7 @@ func NewMandelbrotTile(min, max Vec2/*, x, y float64*/, bounds image.Rectangle) 
     Max:    max,
     Bounds: bounds,
   }
+  m.joe = joe
 
   return m
 }
@@ -43,7 +48,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, /*tilechan
     iterations := 0
     maxIterations := 1000
     maxDist := 2.0
-    distSq := float32(maxDist * maxDist)
+    thresholdDist := float32(maxDist * maxDist)
+    distSq := float32(0.0)
 
     //v := V2(0.0, 0.0)
     //z := complex(v.X, v.Y)
@@ -67,7 +73,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, /*tilechan
       default:
         iterations++
         iterations--
-        break;
+        break
       }
 
       // If we need to fetch another to work on...
@@ -76,6 +82,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, /*tilechan
         v2, pixel = tile.sub.Next()
         c = complex(v2.X, v2.Y)
         iterations = 0
+        fmt.Printf("--Putting #%v pixel: %v  z: %v c: %v\n", iterations, pixel, z, c)
       }
 
       var badDistance, tooMany bool
@@ -92,12 +99,14 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, /*tilechan
 
         // How far are we?
         re, im := real(z), imag(z)
-        if re*re+im*im > distSq {
+        distSq = re*re+im*im
+        if distSq > thresholdDist {
           // We are off in the weeds
           badDistance = true
           break
         }
       }
+      fmt.Printf("----Counted #%v pixel: %v  d: %v\n", count, maxCount, distSq)
 
       if tooMany {
         // Its stuck
@@ -116,7 +125,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, /*tilechan
         color := getColor(iterations)
         //draw.Draw(tile.Img, tile.Img.Bounds(), &image.Uniform{color}, image.Point{}, draw.Src)
         draw.Draw(tile.Img, image.Rectangle{image.Point{0,0}, pixel}, &image.Uniform{color}, image.Point{}, draw.Src)
-        fmt.Printf("Putting #%v pixel: %v", iterations, color)
+        fmt.Printf("Putting #%v pixel: %v  Z: %v, C: %v\n", iterations, color, z, c)
+        joe.dataChannels.messages <- fmt.Sprintf("%v: %v: %v %v", iterations, pixel, z, color)
       }
 
     }
