@@ -18,6 +18,9 @@ var (
   tile      = image.NewRGBA(image.Rect(0, 0, 100, 100))
   count     = 0
   startTime = time.Now()
+
+  field = NewField(image.Rectangle{Max: image.Point{X: 800, Y: 600}}, 100.0)
+  joe   = NewJoe(field)
 )
 
 func init() {
@@ -38,8 +41,10 @@ func drawP5() {
   count++
   t := time.Now()
   elapsed := t.Sub(startTime).Seconds()
-
   sec := t.Second()
+
+  joe.Render()
+
   clockStart := -(math.Pi / 2)
 
   p5.StrokeWidth(2)
@@ -62,5 +67,5 @@ func drawP5() {
   p5.StrokeWidth(5)
   p5.Arc(300, 100, 80, 80, clockStart, clockStart+(float64(sec)/60.0)*2.0*math.Pi)
 
-  p5.DrawImage(tile, 20, 20)
+  //p5.DrawImage(tile, 20, 20)
 }
