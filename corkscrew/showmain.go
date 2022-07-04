@@ -6,26 +6,36 @@ import (
   "fmt"
   "image"
   "image/color"
-  "image/draw"
   "math"
   "time"
 
   "github.com/go-p5/p5"
-  colorful "github.com/lucasb-eyer/go-colorful"
 )
 
 var (
-  tile      = image.NewRGBA(image.Rect(0, 0, 100, 100))
+  //tile      = image.NewRGBA(image.Rect(0, 0, 100, 100))
   count     = 0
   startTime = time.Now()
 
-  field = NewField(image.Rectangle{Max: image.Point{X: 800, Y: 600}}, 100.0)
-  joe   = NewJoe(field)
 )
 
+var userDispWidth, userDispHeight int
+var userDomainWidth, userRangeHeight float32
+var field   *Field
+var joe     *Joe
+
 func init() {
-  c := colorful.WarmColor()
-  draw.Draw(tile, tile.Bounds(), &image.Uniform{C: color.RGBA{R: uint8(c.R * 255), G: uint8(c.G * 255), B: uint8(c.B * 255), A: 255}}, image.ZP, draw.Src)
+  //c := colorful.WarmColor()
+  //draw.Draw(tile, tile.Bounds(), &image.Uniform{C: color.RGBA{R: uint8(c.R * 255), G: uint8(c.G * 255), B: uint8(c.B * 255), A: 255}}, image.ZP, draw.Src)
+
+  // Get from cli
+  userDispWidth = 800
+  userDispHeight = 600
+  userDomainWidth = 100.0
+  userRangeHeight = 100.0
+
+  field = NewField(image.Rectangle{Max: image.Point{X: userDispWidth, Y: userDispHeight}}, userDomainWidth, userRangeHeight)
+  joe   = NewJoe(field)
 }
 
 func ShowMain() {
