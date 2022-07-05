@@ -9,7 +9,9 @@ import (
   "github.com/spf13/cobra"
 )
 
-var opts corkscrew.MandelOptions
+var width, height int
+var plotWidth, plotHeight, centerx, centery float32
+var left, right, top, bottom float32
 
 // mandelCmd represents the mandel command
 var mandelCmd = &cobra.Command{
@@ -17,42 +19,43 @@ var mandelCmd = &cobra.Command{
 	Short: "Mandelbrot set",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("mandel called")
+    fmt.Println("mandel called")
+
+    corkscrew.ShowMandelbrotSet(corkscrew.MandelOptions{
+      Width:        width,
+      Height:       height,
+
+      // Either this one (part of set #1)
+      PlotWidth:    plotWidth,
+      PlotHeight:   plotHeight,
+      PlotCenterX:  centerx,
+      PlotCenterY:  centery,
+
+      // Or this one (part of set #1)
+      Left:         left,
+      Right:        right,
+      Top:          top,
+      Bottom:       bottom,
+    })
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(mandelCmd)
 
-  width := mandelCmd.Flags().IntP("width", "w", 1200, "width")
-  height := mandelCmd.Flags().Int("height", 800, "height")
+  mandelCmd.Flags().IntVar(&width, "width", 1200, "width")
+  mandelCmd.Flags().IntVar(&height, "height", 800, "height")
 
-  plotWidth  := mandelCmd.Flags().Float32("PlotWidth", 4.1, "The width of the data to plot")
-  plotHeight := mandelCmd.Flags().Float32("PlotHeight", 4.0, "The height of the data to plot")
-  centerx := mandelCmd.Flags().Float32("centerx", 0, "Put the center")
-  centery := mandelCmd.Flags().Float32("centery", 0, "Put the center")
+  mandelCmd.Flags().Float32Var(&plotWidth, "PlotWidth", 4.1, "The width of the data to plot")
+  mandelCmd.Flags().Float32Var(&plotHeight, "PlotHeight", 4.0, "The height of the data to plot")
+  mandelCmd.Flags().Float32Var(&centerx, "centerx", 0, "Put the center")
+  mandelCmd.Flags().Float32Var(&centery, "centery", 0, "Put the center")
 
-  left := mandelCmd.Flags().Float32P("left", "l", -2.1, "The left coordinate")
-  right := mandelCmd.Flags().Float32P("right", "r", 1.2, "The right coordinate")
-  top := mandelCmd.Flags().Float32P("top", "t", 1.2, "The top coordinate")
-  bottom := mandelCmd.Flags().Float32P("bottiom", "b", -1.2, "The bottom coordinate")
+  mandelCmd.Flags().Float32Var(&left, "left", -2.1, "The left coordinate")
+  mandelCmd.Flags().Float32Var(&right, "right", 1.2, "The right coordinate")
+  mandelCmd.Flags().Float32Var(&top, "top", 1.2, "The top coordinate")
+  mandelCmd.Flags().Float32Var(&bottom, "bottom", -1.2, "The bottom coordinate")
 
-  corkscrew.ShowMandelbrotSet(corkscrew.MandelOptions{
-    Width:        *width,
-    Height:       *height,
-
-    // Either this one (part of set #1)
-    PlotWidth:    *plotWidth,
-    PlotHeight:   *plotHeight,
-    PlotCenterX:  *centerx,
-    PlotCenterY:  *centery,
-
-    // Or this one (part of set #1)
-    Left:         *left,
-    Right:        *right,
-    Top:          *top,
-    Bottom:       *bottom,
-  })
 
   // TODO:
   // * Axes, scrollbars, etc.

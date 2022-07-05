@@ -18,12 +18,7 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
   Use:   "corkscrew",
-  Short: "Your personal developer-helper app",
-  Long: `
-corkscrew watches your keystrokes and does helpful tricks. For example:
-
-Move windows to places.
-More good stuff here.`,
+  Short: "Draw",
 
   // Uncomment the following line if your bare application
   // has an action associated with it:
