@@ -21,7 +21,7 @@ var mandelCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
     fmt.Println("mandel called")
 
-    corkscrew.ShowMandelbrotSet(corkscrew.MandelOptions{
+    _ = corkscrew.ShowMandelbrotSet(corkscrew.MandelOptions{
       Width:        width,
       Height:       height,
 
@@ -55,7 +55,6 @@ func init() {
   mandelCmd.Flags().Float32Var(&right, "right", 1.2, "The right coordinate")
   mandelCmd.Flags().Float32Var(&top, "top", 1.2, "The top coordinate")
   mandelCmd.Flags().Float32Var(&bottom, "bottom", -1.2, "The bottom coordinate")
-
 
   // TODO:
   // * Axes, scrollbars, etc.

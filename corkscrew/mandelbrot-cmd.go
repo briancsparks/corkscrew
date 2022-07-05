@@ -32,8 +32,6 @@ var (
 )
 
 var mandelOpts MandelOptions
-//var userDispWidth, userDispHeight int
-//var userDomainWidth, userRangeHeight float32
 var field           *Field
 var joe             *Joe
 var mandel          *MandelbrotTile
