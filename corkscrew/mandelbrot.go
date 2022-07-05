@@ -146,7 +146,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
           }
           //assertMsg(distSq <= thresholdDist, fmt.Sprintf("distSq: %v, (%v)", distSq, thresholdDist))
         }
-        //fmt.Printf("%05d ---- Counted #%v max: %v, Iterated #%v max: %v  d: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", totalLoops, count, maxCount, iterations, maxIterations, distSq, z, c, tooMany, tooFar, tileDone)
+        //fmt.Printf("%05d ---- Counted #%v max: %v, Iterated #%v max: %v, pix: %v,  d: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", totalLoops, count, maxCount, iterations, maxIterations, pixel, distSq, z, c, tooMany, tooFar, tileDone)
 
         if tooMany {
           // Its stuck

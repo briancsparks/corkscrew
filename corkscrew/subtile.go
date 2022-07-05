@@ -22,7 +22,8 @@ func (st *SubTilizer) Curr() (*Vec2, *image.Point) {
   p := st.ParentTile
   pt := st.CurrentIndexPoint
 
-  index := pt.X * pt.Y
+  //index := pt.X * pt.Y
+  index := (pt.Y * p.Rect.Dx()) + pt.X
   if index > p.Rect.Dx() * p.Rect.Dy() {
     return nil, nil
   }
@@ -45,7 +46,8 @@ func (st *SubTilizer) Next() (*Vec2, *image.Point) {
     pt.Y += 1
   }
 
-  index := pt.X * pt.Y
+  //index := pt.X * pt.Y
+  index := (pt.Y * p.Rect.Dx()) + pt.X
   if index > p.Rect.Dx() * p.Rect.Dy() {
     return nil, nil
   }
@@ -56,6 +58,19 @@ func (st *SubTilizer) Next() (*Vec2, *image.Point) {
   st.CurrentIndexPoint = pt
 
   return &Vec2{x, y}, &pt
+}
+
+func halfCoord(fmin, fmax float32, imin, imax int, midpt int, backwards bool) float32 {
+  widthOfIcell, half, offset := computeHalfHelper(fmin, fmax, imin, imax, midpt)
+
+  var center float32
+  if backwards {
+   center = fmax - half - (float32(offset) * widthOfIcell)
+  } else {
+   center = fmin + half + (float32(offset) * widthOfIcell)
+  }
+
+  return center
 }
 
 func Coordinate(t *Tile, pt image.Point, mathy bool) Vec2 {
@@ -69,19 +84,6 @@ func Coordinate4(min, max Vec2, rect *image.Rectangle, pt image.Point, mathy boo
   fy := halfCoord(min.Y, max.Y, rect.Min.Y, rect.Max.Y, pt.Y, mathy)
 
   return fx, fy
-}
-
-func halfCoord(fmin, fmax float32, imin, imax int, midpt int, backwards bool) float32 {
-  widthOfIcell, half, offset := computeHalfHelper(fmin, fmax, imin, imax, midpt)
-
-  var center float32
-  if backwards {
-    center = fmax - half - (float32(offset) * widthOfIcell)
-  } else {
-    center = fmin + half + (float32(offset) * widthOfIcell)
-  }
-
-  return center
 }
 
 
