@@ -18,7 +18,7 @@ func init() {
   black, _ = colorful.Hex("#000000")
 
   //fmt.Printf("palette: %v\n", palette)
-  fmt.Printf("len: %v\n", len(palette))
+  //fmt.Printf("len: %v\n", len(palette))
 }
 
 func getColor(iterations, maxIterations int) colorful.Color {

@@ -3,11 +3,9 @@ package corkscrew
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 import (
-  "fmt"
   "github.com/go-p5/p5"
   "image"
   "image/color"
-  "math"
   "time"
 )
 
@@ -33,7 +31,7 @@ var (
   startTime = time.Now()
 )
 
-var opts              *MandelOptions
+var mandelOpts MandelOptions
 //var userDispWidth, userDispHeight int
 //var userDomainWidth, userRangeHeight float32
 var field           *Field
@@ -47,11 +45,11 @@ func init() {
 
 func ShowMandelbrotSet(opts_ MandelOptions) error {
 
-  opts = GetMandelOpts(opts_)
+  mandelOpts = GetMandelOpts(opts_)
   quit = make(chan struct{})
 
-  userRect := image.Rectangle{Max: image.Point{X: opts.Width, Y: opts.Height}}
-  field   = NewField(userRect, opts.Left, opts.Top, opts.Right, opts.Bottom)
+  userRect := image.Rectangle{Max: image.Point{X: mandelOpts.Width, Y: mandelOpts.Height}}
+  field   = NewField(userRect, mandelOpts.Left, mandelOpts.Top, mandelOpts.Right, mandelOpts.Bottom)
   joe     = NewJoe(field)
 
   fmin, fmax := field.FBounds()
@@ -73,47 +71,29 @@ func ShowMandelbrotSet(opts_ MandelOptions) error {
 }
 
 func setupP5() {
-  p5.Canvas(opts.Width, opts.Height)
+  p5.Canvas(mandelOpts.Width, mandelOpts.Height)
   p5.Background(color.Gray{Y: 220})
 }
 
+// ------------------------------------------------------------------------------------------------------------------
+
 func drawP5() {
   count++
-  t := time.Now()
-  elapsed := t.Sub(startTime).Seconds()
-  sec := t.Second()
 
+  //t := time.Now()
+  //elapsed := t.Sub(startTime).Seconds()
+  //sec := t.Second()
+
+  field.Render()
   joe.Render()
 
-  clockStart := -(math.Pi / 2)
-
-  p5.StrokeWidth(2)
-  p5.Fill(color.RGBA{R: 255, A: 208})
-  p5.Ellipse(50, 50, 80, 80)
-
-  p5.Fill(color.RGBA{B: 255, A: 208})
-  p5.Quad(50, 50, 80, 50, 80, 120, 60, 120)
-
-  p5.Fill(color.RGBA{G: 255, A: 208})
-  p5.Rect(200, 200, 50, 100)
-
-  p5.Fill(color.RGBA{G: 255, A: 208})
-  p5.Triangle(100, 100, 120, 120, 80, 120)
-
-  p5.TextSize(24)
-  p5.Text(fmt.Sprintf("%d - %v", count, float64(count)/elapsed), 10, 300)
-
-  p5.Stroke(color.Black)
-  p5.StrokeWidth(5)
-  p5.Arc(300, 100, 80, 80, clockStart, clockStart+(float64(sec)/60.0)*2.0*math.Pi)
 }
 
+// ------------------------------------------------------------------------------------------------------------------
 
-func GetMandelOpts(userOpts MandelOptions) *MandelOptions {
+func GetMandelOpts(userOpts MandelOptions) MandelOptions {
 
   opts := MandelOptions {
-    //Width:          oneOrTheOther(userOpts.Width,   1200),
-    //Height:         oneOrTheOther(userOpts.Height, 900),
     Width:          oneOrTheOther(userOpts.Width,   800),
     Height:         oneOrTheOther(userOpts.Height, 600),
 
@@ -137,7 +117,7 @@ func GetMandelOpts(userOpts MandelOptions) *MandelOptions {
     opts.Bottom   = opts.PlotCenterY - halfHeight
   }
 
-  return &opts
+  return opts
 }
 
 func (opts *MandelOptions) GetLeft() float32 {
