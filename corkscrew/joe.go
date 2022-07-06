@@ -3,7 +3,6 @@ package corkscrew
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 import (
-  "fmt"
   "github.com/go-p5/p5"
   "sync"
 )
@@ -76,7 +75,7 @@ func (j *Joe) Render() {
     p5.DrawImage(tile.Img, float64(tile.Min.X), float64(tile.Min.Y))
   }
 
-  p5.TextSize(24)
-  p5.Text(fmt.Sprintf("%s", j.message), 10, 300)
+  //p5.TextSize(24)
+  //p5.Text(fmt.Sprintf("%s", j.message), 10, 300)
 }
 

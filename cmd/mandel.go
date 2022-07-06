@@ -55,6 +55,10 @@ func init() {
   mandelCmd.Flags().Float32Var(&right, "right", 1.2, "The right coordinate")
   mandelCmd.Flags().Float32Var(&top, "top", 1.2, "The top coordinate")
   mandelCmd.Flags().Float32Var(&bottom, "bottom", -1.2, "The bottom coordinate")
+  //mandelCmd.Flags().Float32Var(&left, "left", -600.0, "The left coordinate")
+  //mandelCmd.Flags().Float32Var(&right, "right", 600, "The right coordinate")
+  //mandelCmd.Flags().Float32Var(&top, "top", 200.0, "The top coordinate")
+  //mandelCmd.Flags().Float32Var(&bottom, "bottom", -200.0, "The bottom coordinate")
 
   // TODO:
   // * Axes, scrollbars, etc.

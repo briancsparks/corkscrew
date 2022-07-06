@@ -6,6 +6,7 @@ import (
   "fmt"
   "github.com/go-p5/p5"
   "image"
+  "math"
 )
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -27,21 +28,35 @@ type Field struct {
 // --------------------------------------------------------------------------------------------------------------------
 
 func (f *Field) UnitsPerPix() (Vec2, Vec2) {
-  fMinX     := f.Min.X
-  fMinY     := f.Min.Y
   iMinX     := f.Bounds.Min.X
   iMinY     := f.Bounds.Min.Y
 
-  fMaxX     := f.Max.X
-  fMaxY     := f.Max.Y
   iMaxX     := f.Bounds.Max.X
   iMaxY     := f.Bounds.Max.Y
 
-  fwidth    := fMaxX - fMinX
-  fheight   := fMaxY - fMinY
+  return UnitsPerPix6(f.Min, f.Max, iMinX, iMinY, iMaxX, iMaxY)
+}
 
-  iwidth    := iMaxX - iMinX
-  iheight   := iMaxY - iMinY
+// --------------------------------------------------------------------------------------------------------------------
+
+func UnitsPerPix6(fMin, fMax Vec2, iMinX, iMinY, iMaxX, iMaxY int) (Vec2, Vec2) {
+  fMinX     := fMin.X
+  fMinY     := fMin.Y
+
+  fMaxX     := fMax.X
+  fMaxY     := fMax.Y
+
+  return UnitsPerPix8(fMinX, fMinY, fMaxX, fMaxY, iMinX, iMinY, iMaxX, iMaxY)
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+func UnitsPerPix8(fMinX, fMinY, fMaxX, fMaxY float32, iMinX, iMinY, iMaxX, iMaxY int) (Vec2, Vec2) {
+  fwidth    := float32(math.Abs(float64(fMaxX - fMinX)))
+  fheight   := float32(math.Abs(float64(fMaxY - fMinY)))
+
+  iwidth    := math.Floor(math.Abs(float64(iMaxX - iMinX)))
+  iheight   := math.Floor(math.Abs(float64(iMaxY - iMinY)))
 
   unitsPPX  := fwidth / float32(iwidth)
   pixelsPUX := float32(iwidth) / fwidth
@@ -111,8 +126,14 @@ func (f *Field) getPixel(x, y float32) *image.Point {
 
 func (f *Field) Render() {
 
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+func (f *Field) RenderLast() {
+
   if configOptions.ShowGridLines {
-    var x,y,dx,dy float32
+    var x,y/*,dx,dy*/ float32
 
     x = 0.0
     y = 0.0
@@ -125,29 +146,33 @@ func (f *Field) Render() {
     p5.Line(float64(origin.X), float64(f.Bounds.Min.Y), float64(origin.X), float64(f.Bounds.Max.Y))
     p5.Line(float64(f.Bounds.Min.X), float64(origin.Y), float64(f.Bounds.Max.X), float64(origin.Y))
 
-    // Grid lines (x-->)
-    for dx = 1.0; dx < f.Max.X; dx += 1.0 {
-      gridPt := f.getPixel(x + dx, y)
-      p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
-    }
-
-    // Grid lines (<--x)
-    for dx = -1.0; dx >= f.Min.X; dx -= 1.0 {
-      gridPt := f.getPixel(x + dx, y)
-      p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
-    }
-
-    // Grid lines (y-->)
-    for dy = 1.0; dy < f.Max.X; dy += 1.0 {
-      gridPt := f.getPixel(x, y + dy)
-      p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
-    }
-
-    // Grid lines (<--y)
-    for dy = -1.0; dy >= f.Min.X; dy -= 1.0 {
-      gridPt := f.getPixel(x, y + dy)
-      p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
-    }
+    //// Grid lines (x-->)
+    //dx, dy = 0.0, 0.0
+    //for dx = 1.0; dx < f.Max.X; dx += 1.0 {
+    //  gridPt := f.getPixel(x + dx, y)
+    //  p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
+    //}
+    //
+    //// Grid lines (<--x)
+    //dx, dy = 0.0, 0.0
+    //for dx = -1.0; dx >= f.Min.X; dx -= 1.0 {
+    //  gridPt := f.getPixel(x + dx, y)
+    //  p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
+    //}
+    //
+    //// Grid lines (y-->)
+    //dx, dy = 0.0, 0.0
+    //for dy = 1.0; dy < f.Max.Y; dy += 1.0 {
+    //  gridPt := f.getPixel(x, y + dy)
+    //  p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
+    //}
+    //
+    //// Grid lines (<--y)
+    //dx, dy = 0.0, 0.0
+    //for dy = -1.0; dy >= f.Min.Y; dy -= 1.0 {
+    //  gridPt := f.getPixel(x, y + dy)
+    //  p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
+    //}
 
   }
 

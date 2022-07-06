@@ -31,7 +31,7 @@ var (
   startTime = time.Now()
 )
 
-var mandelOpts MandelOptions
+var mandelOpts      MandelOptions
 var field           *Field
 var joe             *Joe
 var mandel          *MandelbrotTile
@@ -84,6 +84,7 @@ func drawP5() {
 
   field.Render()
   joe.Render()
+  field.RenderLast()
 
 }
 
@@ -114,6 +115,40 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
     opts.Top      = opts.PlotCenterY + halfHeight
     opts.Bottom   = opts.PlotCenterY - halfHeight
   }
+
+  //fmin := V2(opts.Left, opts.Top)
+  //fmax := V2(opts.Right, opts.Bottom)
+  //
+  //unitsPerPixel, pixelsPerUnit := UnitsPerPix6(fmin, fmax, 0, 0, opts.Width, opts.Height)
+  //fmt.Printf("uppX: %v uppY: %v  %v\n", unitsPerPixel.X, unitsPerPixel.Y, pixelsPerUnit)
+  //
+  //// Fix aspect limits (the smaller aspect ratio is picked)
+  ////ar := math.Min(float64(unitsPerPixel.X), float64(unitsPerPixel.Y))
+  //
+  //if unitsPerPixel.X < unitsPerPixel.Y {
+  //  // stretch y axis range
+  //  origRange := opts.Right - opts.Left
+  //  ar := origRange / float32(opts.Width)
+  //  newRange := float32(opts.Height) * ar
+  //  added := newRange - origRange
+  //  half := added / 2.0
+  //  opts.Top      += half
+  //  opts.Bottom   -= half
+  //
+  //} else {
+  //  // stretch x axis range
+  //  origXRange := opts.Right - opts.Left
+  //  origYRange := opts.Top - opts.Bottom
+  //  ar := origYRange / float32(opts.Height)
+  //  newXRange := float32(opts.Width) * ar
+  //  added := newXRange - origXRange
+  //  half := added / 2.0
+  //  opts.Left   -= half
+  //  opts.Right  += half
+  //}
+  //
+  //unitsPerPixel, pixelsPerUnit = UnitsPerPix8(opts.Left, opts.Top, opts.Right, opts.Bottom, 0, 0, opts.Width, opts.Height)
+  //fmt.Printf("uppX: %v uppY: %v  %v\n", unitsPerPixel.X, unitsPerPixel.Y, pixelsPerUnit)
 
   return opts
 }
