@@ -3,9 +3,7 @@ package corkscrew
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 import (
-  "fmt"
   "image"
-  "math"
 )
 
 type SubTilizer struct {
@@ -52,23 +50,12 @@ func (st *SubTilizer) Next() (*Vec2, *image.Point) {
 
   //index := pt.X * pt.Y
   index := (pt.Y * p.Rect.Dx()) + pt.X
-  if index > p.Rect.Dx() * p.Rect.Dy() {
+  if index >= p.Rect.Dx() * p.Rect.Dy() {
     return nil, nil
   }
 
   x := halfCoord(p.Min.X, p.Max.X, p.Rect.Min.X, p.Rect.Max.X, pt.X, false)
-  //y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt.Y, st.Field.ShowMathy)
   y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt.Y, false)
-
-  realmPt := ScreenToRealmVec2(pt, p.Min, p.Max, p.Rect)
-  computedPt := Vec2{x, y}
-  if asserter(realmPt.IsApproxEqual(&computedPt)) {
-    d := diff(&computedPt, &realmPt)
-    d2 := math.Sqrt(float64(d.X*d.X + d.Y*d.Y))
-    fmt.Printf("xxx next pt(%v): d: [%11.9f] (%v) != (%v), diff: (%v)\n", pt, d2, computedPt, realmPt, d)
-  //} else {
-  //  fmt.Printf("    next pt(%v): d: [%11.9f] (%v) != (%v), diff: (%v)\n", pt, d2, computedPt, realmPt, d)
-  }
 
   st.CurrentIndexPoint = pt
 
@@ -150,18 +137,3 @@ func computeHalfHelperGridPt(fmin, fmax float32, imin, imax int, location float3
   return midpt
 }
 
-
-
-
-//func halfCoordGridPt(fmin, fmax float32, imin, imax int, midpt int, backwards bool) float32 {
-//  widthOfIcell, half, offset := computeHalfHelperGridPt(fmin, fmax, imin, imax, midpt)
-//
-//  var center float32
-//  if backwards {
-//    center = fmax - half - (float32(offset) * widthOfIcell)
-//  } else {
-//    center = fmin + half + (float32(offset) * widthOfIcell)
-//  }
-//
-//  return center
-//}

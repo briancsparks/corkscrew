@@ -125,8 +125,8 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
   fixed     := NormalizeRealm(realmRect, image.Rect(0, 0, opts.Width, opts.Height))
   opts.Left, opts.Top, opts.Right, opts.Bottom = fixed.Parts()
 
-  fmt.Printf("Showing: [(%7.5f, %7.5f) - (%7.5f, %7.5f)]  -->  [(%4d, %4d) - (%4d, %4d)]\n",
-      opts.Left, opts.Top, opts.Right, opts.Bottom, 0, 0, opts.Width, opts.Height)
+  //fmt.Printf("Showing: [(%7.5f, %7.5f) - (%7.5f, %7.5f)]  -->  [(%4d, %4d) - (%4d, %4d)]\n",
+  //    opts.Left, opts.Top, opts.Right, opts.Bottom, 0, 0, opts.Width, opts.Height)
 
   return opts
 }
