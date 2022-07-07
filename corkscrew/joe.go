@@ -10,6 +10,7 @@ import (
 type Joe struct {
   Field *Field
   Tiles []*Tile
+  MainTile *Tile
   message string
 
   dataChannels DataChannels
@@ -45,7 +46,8 @@ func (j *Joe) Run(quit chan struct{}) (chan *Tile, error) {
       select {
       case t := <-ch:
         //j.Tiles = append(j.Tiles, t)
-        j.AppendTile(t)
+        //j.AppendTile(t)
+        j.SetMainTile(t)
 
       case msg := <-j.dataChannels.messages:
         j.message = msg
@@ -57,6 +59,13 @@ func (j *Joe) Run(quit chan struct{}) (chan *Tile, error) {
   }()
 
   return ch, nil
+}
+
+func (j *Joe) SetMainTile(t *Tile) {
+  j.lock.Lock()
+  defer j.lock.Unlock()
+
+  j.MainTile = t
 }
 
 func (j *Joe) AppendTile(t *Tile) {
@@ -73,6 +82,9 @@ func (j *Joe) Render() {
 
   for _, tile := range j.Tiles {
     p5.DrawImage(tile.Img, float64(tile.Min.X), float64(tile.Min.Y))
+  }
+  if j.MainTile != nil {
+    p5.DrawImage(j.MainTile.Img, float64(j.MainTile.Min.X), float64(j.MainTile.Min.Y))
   }
 
   //p5.TextSize(24)

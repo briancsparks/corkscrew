@@ -171,6 +171,9 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
         // If we are done with this pixel, report it or whatever
         if doneWithCurrent {
           iterCounts[iterations] += 1
+          if pixel.X == 0 {
+            tilechan <- tile
+          }
 
           color := getColor(iterations, maxIterations)
           //draw.Draw(tile.Img, tile.Img.Bounds(), &image.Uniform{color}, image.Point{}, draw.Src)
