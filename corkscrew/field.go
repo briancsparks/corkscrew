@@ -75,12 +75,6 @@ func (f *Field) mkTile(w, h int, rw, rh, centerx, centery float32) *Tile {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-func (f *Field) Coordinate(t *Tile, pt image.Point) Vec2 {
-  return Coordinate(t, pt, f.ShowMathy)
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
 func (f *Field) FBounds() (Vec2, Vec2) {
   return f.Min, f.Max
 }
@@ -107,19 +101,7 @@ func NewField(bounds image.Rectangle, /*width, height*/ left, top, right, bottom
   fmt.Printf("Show horizontal axis: %v\n", configOptions.ShowHorizAxis)
   fmt.Printf("Show vertical axis: %v\n", configOptions.ShowVertAxis)
 
-  //v2Look := Vec2{0, 0}
-  //_, origin := GridPt2(v2Look, f.Min, f.Max, f.Bounds, f.ShowMathy)
-  //fmt.Printf("GridPt. Pt: %v, f: %v %v, r: %v\n", v2Look, f.Min, f.Max, f.Bounds)
-  //fmt.Printf("GridLines: origin: %v; bounds: %v\n", origin, f.Bounds)
-
   return f
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-func (f *Field) getPixel(x, y float32) *image.Point {
-  _, pt := GridPt2(Vec2{x, y}, f.Min, f.Max, f.Bounds, f.ShowMathy)
-  return pt
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -145,10 +127,7 @@ func (f *Field) RenderLast() {
 
     x = 0.0
     y = 0.0
-    //origin := f.getPixel(x, y)
     origin := f.getRealmPixel(x, y)
-    //v2Look := Vec2{x, y}
-    //_, origin := GridPt2(v2Look, f.Min, f.Max, f.Bounds, f.ShowMathy)
 
     // The origin and major x-y axis
     p5.StrokeWidth(2)

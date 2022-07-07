@@ -24,7 +24,6 @@ func (st *SubTilizer) Curr() (*Vec2, *image.Point) {
   p := st.ParentTile
   pt := st.CurrentIndexPoint
 
-  //index := pt.X * pt.Y
   index := (pt.Y * p.Rect.Dx()) + pt.X
   if index > p.Rect.Dx() * p.Rect.Dy() {
     return nil, nil
@@ -75,20 +74,6 @@ func halfCoord(fmin, fmax float32, imin, imax int, midpt int, backwards bool) fl
   return center
 }
 
-func Coordinate(t *Tile, pt image.Point, mathy bool) Vec2 {
-  x, y := Coordinate4(t.Min, t.Max, &t.Rect, pt, mathy)
-  return V2(x, y)
-}
-
-// Coordinate4 computes the center of a pixel as a float
-func Coordinate4(min, max Vec2, rect *image.Rectangle, pt image.Point, mathy bool) (float32, float32) {
-  fx := halfCoord(min.X, max.X, rect.Min.X, rect.Max.X, pt.X, false)
-  fy := halfCoord(min.Y, max.Y, rect.Min.Y, rect.Max.Y, pt.Y, mathy)
-
-  return fx, fy
-}
-
-
 func computeHalfHelper(fmin, fmax float32, imin, imax int, index int) ( cellwidth, half float32, offset int) {
   fwidth := fmax - fmin
   iwidth := imax - imin
@@ -97,43 +82,5 @@ func computeHalfHelper(fmin, fmax float32, imin, imax int, index int) ( cellwidt
   offset = index - imin
 
   return
-}
-
-func GridPt2(v Vec2, fmin, fmax Vec2, r image.Rectangle, backwards bool) (*Vec2, *image.Point) {
-  x := computeHalfHelperGridPt(fmin.X, fmax.X, r.Min.X, r.Max.X, v.X, false)
-  y := computeHalfHelperGridPt(fmin.Y, fmax.Y, r.Min.Y, r.Max.Y, v.Y, backwards)
-
-  return &v, &image.Point{X: x, Y: y}
-}
-
-func (st *SubTilizer) GridPt(v Vec2) (*Vec2, *image.Point) {
-  p := st.ParentTile
-
-  //index := (pt.Y * p.Rect.Dx()) + pt.X
-  //if index > p.Rect.Dx() * p.Rect.Dy() {
-  //  return nil, nil
-  //}
-
-  x := computeHalfHelperGridPt(p.Min.X, p.Max.X, p.Rect.Min.X, p.Rect.Max.X, v.X, false)
-  y := computeHalfHelperGridPt(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, v.Y, st.Field.ShowMathy)
-
-  return &v, &image.Point{X: x, Y: y}
-}
-
-func computeHalfHelperGridPt(fmin, fmax float32, imin, imax int, location float32, backwards bool) int {
-  fwidth := fmax - fmin
-  iwidth := imax - imin
-
-  var percent float32
-  if backwards {
-    percent = (fmax - location) / fwidth
-  } else {
-    percent = (location - fmin) / fwidth
-  }
-  midpt := imin + int(float32(iwidth) * percent)
-
-  //fmt.Printf("In: f0: %v, f1: %v, i0: %v i1: %v, loc: %v -- ww: %v %v, pct: %v, mid: %v\n", fmin, fmax, imin, imax, location, fwidth, iwidth, percent, midpt)
-
-  return midpt
 }
 

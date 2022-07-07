@@ -12,13 +12,9 @@ var black, white colorful.Color
 
 func init() {
   palette = gradientGen()
-  //black = colorful.Color{R: 0.313725, G: 0.478431, B: 0.721569}
-  //black = colorful.Color{R: 0.0, G: 0.0, B: 0.0}
 
   black, _ = colorful.Hex("#000000")
-
-  //fmt.Printf("palette: %v\n", palette)
-  //fmt.Printf("len: %v\n", len(palette))
+  white, _ = colorful.Hex("#000000")
 }
 
 func getColor(iterations, maxIterations int) colorful.Color {
