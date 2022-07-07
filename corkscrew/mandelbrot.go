@@ -86,6 +86,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
       c = complex(v2.X, v2.Y)
       iterations = 0
       totalPixels += 1
+      //fmt.Printf("Beginning work on pixel (%4d, %4d) [point: (%7.5f, %7.5f)]\n", pixel.X, pixel.Y, v2.X, v2.Y)
       //fmt.Printf("--Putting0 #%v pixel: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", iterations, pixel, z, c, "N/A", "N/A", tileDone)
     }
 
@@ -118,6 +119,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
           c = complex(v2.X, v2.Y)
           iterations = 0
           totalPixels += 1
+          //fmt.Printf("Beginning work on pixel (%4d, %4d) [point: (%7.5f, %7.5f)]\n", pixel.X, pixel.Y, v2.X, v2.Y)
           //fmt.Printf("--Putting1 #%v pixel: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", iterations, pixel, z, c, tooMany, tooFar, tileDone)
         }
 

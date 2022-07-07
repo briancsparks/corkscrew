@@ -3,6 +3,7 @@ package corkscrew
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 import (
+  "fmt"
   "github.com/go-p5/p5"
   "image"
   "image/color"
@@ -43,8 +44,11 @@ func init() {
 
 func ShowMandelbrotSet(opts_ MandelOptions) error {
 
-  mandelOpts = GetMandelOpts(opts_)
   quit = make(chan struct{})
+
+  mandelOpts = GetMandelOpts(opts_)
+  fmt.Printf("Showing: [(%7.5f, %7.5f) - (%7.5f, %7.5f)]  -->  [(%4d, %4d) - (%4d, %4d)]\n",
+    mandelOpts.Left, mandelOpts.Top, mandelOpts.Right, mandelOpts.Bottom, 0, 0, mandelOpts.Width, mandelOpts.Height)
 
   userRect := image.Rectangle{Max: image.Point{X: mandelOpts.Width, Y: mandelOpts.Height}}
   field   = NewField(userRect, mandelOpts.Left, mandelOpts.Top, mandelOpts.Right, mandelOpts.Bottom)
@@ -120,6 +124,9 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
   realmRect := R2(opts.Left, opts.Top, opts.Right, opts.Bottom)
   fixed     := NormalizeRealm(realmRect, image.Rect(0, 0, opts.Width, opts.Height))
   opts.Left, opts.Top, opts.Right, opts.Bottom = fixed.Parts()
+
+  fmt.Printf("Showing: [(%7.5f, %7.5f) - (%7.5f, %7.5f)]  -->  [(%4d, %4d) - (%4d, %4d)]\n",
+      opts.Left, opts.Top, opts.Right, opts.Bottom, 0, 0, opts.Width, opts.Height)
 
   return opts
 }

@@ -23,8 +23,9 @@ type Tile struct {
 }
 
 func NewTile(w, h int, rw, rh, centerx, centery float32, field *Field) *Tile {
+  rrx, rry := rw / 2.0, rh / 2.0
+  min, max := minMax(centerx-rrx, centery-rry, centerx+rrx, centery+rry, field)
   rect := image.Rect(0, 0, w, h)
-  min, max := minMax(centerx-rw, centery-rh, centerx+rw, centery+rh, field)
 
   t := &Tile{
     Min:  min,

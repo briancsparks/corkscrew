@@ -3,7 +3,9 @@ package corkscrew
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 import (
+  "fmt"
   "image"
+  "math"
 )
 
 type SubTilizer struct {
@@ -31,7 +33,7 @@ func (st *SubTilizer) Curr() (*Vec2, *image.Point) {
   }
 
   x := halfCoord(p.Min.X, p.Max.X, p.Rect.Min.X, p.Rect.Max.X, pt.X, false)
-  y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt.Y, st.Field.ShowMathy)
+  y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt.Y, false)
 
   st.CurrentIndexPoint = pt
 
@@ -55,7 +57,18 @@ func (st *SubTilizer) Next() (*Vec2, *image.Point) {
   }
 
   x := halfCoord(p.Min.X, p.Max.X, p.Rect.Min.X, p.Rect.Max.X, pt.X, false)
-  y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt.Y, st.Field.ShowMathy)
+  //y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt.Y, st.Field.ShowMathy)
+  y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt.Y, false)
+
+  realmPt := ScreenToRealmVec2(pt, p.Min, p.Max, p.Rect)
+  computedPt := Vec2{x, y}
+  if asserter(realmPt.IsApproxEqual(&computedPt)) {
+    d := diff(&computedPt, &realmPt)
+    d2 := math.Sqrt(float64(d.X*d.X + d.Y*d.Y))
+    fmt.Printf("xxx next pt(%v): d: [%11.9f] (%v) != (%v), diff: (%v)\n", pt, d2, computedPt, realmPt, d)
+  //} else {
+  //  fmt.Printf("    next pt(%v): d: [%11.9f] (%v) != (%v), diff: (%v)\n", pt, d2, computedPt, realmPt, d)
+  }
 
   st.CurrentIndexPoint = pt
 

@@ -37,18 +37,27 @@ func getColor(iterations, maxIterations int) colorful.Color {
   return result
 }
 
+func asserter(test bool) bool {
+  if !test {
+    breakout("", true)
+  }
+  return !test
+}
+
 func assertMsg(test bool, msg string) {
   if !test {
-    breakout(msg)
+    breakout(msg, false)
   }
 }
 
 func assert(test bool) {
   if !test {
-    breakout("")
+    breakout("", false)
   }
 }
 
-func breakout(msg string) {
-  fmt.Printf("  ------------ BREAKOUT!! %v !!\n", msg)
+func breakout(msg string, quiet bool) {
+  if !quiet {
+    fmt.Printf("  ------------ BREAKOUT!! %v !!\n", msg)
+  }
 }

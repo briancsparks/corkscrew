@@ -1,5 +1,11 @@
 package corkscrew
 
+import (
+  "github.com/google/go-cmp/cmp"
+  "github.com/google/go-cmp/cmp/cmpopts"
+  "math"
+)
+
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 type Vec2 struct {
@@ -27,6 +33,21 @@ func Dx(v1, v2 Vec2) float32 {
 
 func Dy(v1, v2 Vec2) float32 {
   return v2.Y - v1.Y
+}
+
+var approximately cmp.Option
+
+func init() {
+  approximately = cmpopts.EquateApprox(0.0, 0.01)
+}
+
+func (a *Vec2) IsApproxEqual(b *Vec2) bool {
+  return cmp.Equal(a, b, approximately)
+  //return true
+}
+
+func diff(a, b *Vec2) Vec2 {
+  return Vec2{float32(math.Abs(float64(a.X - b.X))), float32(math.Abs(float64(a.Y - b.Y)))}
 }
 
 func needNormalize(v1, v2 Vec2) bool {

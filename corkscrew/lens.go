@@ -64,6 +64,14 @@ func RealmToScreen(pt Vec2, realmRect Rec2, rec image.Rectangle) image.Point {
 
 // -------------------------------------------------------------------------------------------------------------------
 
+//RealmToScreenVec2 will return the Point the represents the input Vec2 point
+func RealmToScreenVec2(pt Vec2, realmRectMin, realmRectMax Vec2, rec image.Rectangle) image.Point {
+  realmRect := Rec2{realmRectMin, realmRectMax}
+  return RealmToScreen(pt, realmRect, rec)
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
 func ScreenToRealm(pt image.Point, realmRect Rec2, rec image.Rectangle) Vec2 {
   //pt: image.Point{X: 416 Y: 66},
   //realmRect: Rec2{Min: Vec2{-2.25,1.2}, Max: Vec2{1.35,-1.2}},
@@ -82,4 +90,11 @@ func ScreenToRealm(pt image.Point, realmRect Rec2, rec image.Rectangle) Vec2 {
   y        := pYdist + realmRect.Max.Y
 
   return Vec2{x, y}
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func ScreenToRealmVec2(pt image.Point, realmRectMin, realmRectMax Vec2, rec image.Rectangle) Vec2 {
+  realmRect := Rec2{realmRectMin, realmRectMax}
+  return ScreenToRealm(pt, realmRect, rec)
 }
