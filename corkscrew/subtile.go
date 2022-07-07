@@ -11,6 +11,9 @@ type SubTilizer struct {
   ParentTile      *Tile
 
   CurrentIndexPoint image.Point
+
+  // Internal
+  currIndex int
 }
 
 func NewSubTilizer(parent *Tile, field *Field) *SubTilizer {
@@ -18,6 +21,22 @@ func NewSubTilizer(parent *Tile, field *Field) *SubTilizer {
     Field:        field,
     ParentTile:   parent,
   }
+}
+
+func (st *SubTilizer) PixelCount() int64 {
+  return int64(st.Dx() * st.Dy())
+}
+
+func (st *SubTilizer) Dx() int {
+  return st.ParentTile.Rect.Dx()
+}
+
+func (st *SubTilizer) Dy() int {
+  return st.ParentTile.Rect.Dy()
+}
+
+func (st *SubTilizer) GetCurrIndex() int {
+  return st.currIndex
 }
 
 func (st *SubTilizer) Curr() (*Vec2, *image.Point) {
@@ -41,6 +60,7 @@ func (st *SubTilizer) Next() (*Vec2, *image.Point) {
   p := st.ParentTile
   pt := st.CurrentIndexPoint
 
+  st.currIndex += 1
   pt.X += 1
   if pt.X >= p.Rect.Dx() {
     pt.X = 0

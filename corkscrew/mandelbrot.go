@@ -8,6 +8,7 @@ import (
   "image/draw"
   "math"
   "sync"
+  "time"
 )
 
 type MandelbrotTile struct {
@@ -41,6 +42,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
   go func() {
     wg.Done()
 
+    start := time.Now()
+
     totalLoops := 0
     totalPixels := 0
     totalFails := 0
@@ -69,6 +72,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
     centerx := mathCenterPoint(m.Min.X, m.Max.X)
     centery := mathCenterPoint(m.Min.Y, m.Max.Y)
     tile := tileMaker.mkTile(m.Bounds.Dx(), m.Bounds.Dy(), fwidth, fheight, centerx, centery)
+    //pixelCount := tile.sub.PixelCount()
+    iterCounts := make([]int, maxIterations + 2)
 
     tileDone := false
     fetchNext := false
@@ -123,6 +128,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
           //fmt.Printf("--Putting1 #%v pixel: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", iterations, pixel, z, c, tooMany, tooFar, tileDone)
         }
 
+        //index := tile.sub.GetCurrIndex()
         for count = 0; count < maxCount; count++ {
           z = z*z + c
           iterations++
@@ -164,6 +170,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
 
         // If we are done with this pixel, report it or whatever
         if doneWithCurrent {
+          iterCounts[iterations] += 1
+
           color := getColor(iterations, maxIterations)
           //draw.Draw(tile.Img, tile.Img.Bounds(), &image.Uniform{color}, image.Point{}, draw.Src)
           //draw.Draw(tile.Img, image.Rectangle{image.Point{0, 0}, pixel}, &image.Uniform{color}, image.Point{}, draw.Src)
@@ -179,7 +187,10 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
     }
 
     if tileDone {
-      fmt.Printf("Loops: [%v], Pixels: %v, fast: %v, fail: %v\n", totalLoops, totalPixels, totalFast, totalFails)
+      elapsed := time.Since(start)
+      //fmt.Printf("elapsed sec: %f, micro: %d, milli: %d, nano: %d\n", elapsed.Seconds(), elapsed.Microseconds(), elapsed.Milliseconds(), elapsed.Nanoseconds())
+      fmt.Printf("Time: %f sec -- Loops: [%v], Pixels: %v, fast: %v, fail: %v\n", elapsed.Seconds(), totalLoops, totalPixels, totalFast, totalFails)
+      fmt.Printf("Iter counts: %v\n", iterCounts)
       tilechan <- tile
     }
   }()
