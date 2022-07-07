@@ -120,56 +120,96 @@ func (f *Field) Render() {
 
 // --------------------------------------------------------------------------------------------------------------------
 
+func (f *Field) showHorizAxis() {
+  var x,y float32
+
+  x = 0.0
+  y = 0.0
+  origin := f.getRealmPixel(x, y)
+
+  // The origin and major x-y axis
+  p5.StrokeWidth(2)
+  //p5.Line(float64(origin.X), float64(f.Bounds.Min.Y), float64(origin.X), float64(f.Bounds.Max.Y))
+  p5.Line(float64(f.Bounds.Min.X), float64(origin.Y), float64(f.Bounds.Max.X), float64(origin.Y))
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+func (f *Field) showVertAxis() {
+  var x,y float32
+
+  x = 0.0
+  y = 0.0
+  origin := f.getRealmPixel(x, y)
+
+  // The origin and major x-y axis
+  p5.StrokeWidth(2)
+  p5.Line(float64(origin.X), float64(f.Bounds.Min.Y), float64(origin.X), float64(f.Bounds.Max.Y))
+  //p5.Line(float64(f.Bounds.Min.X), float64(origin.Y), float64(f.Bounds.Max.X), float64(origin.Y))
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+func (f *Field) showGridLines() {
+  var x,y,dx,dy float32
+
+  x = 0.0
+  y = 0.0
+  //origin := f.getRealmPixel(x, y)
+
+  // The origin and major x-y axis
+  p5.StrokeWidth(2)
+  //p5.Line(float64(origin.X), float64(f.Bounds.Min.Y), float64(origin.X), float64(f.Bounds.Max.Y))
+  //p5.Line(float64(f.Bounds.Min.X), float64(origin.Y), float64(f.Bounds.Max.X), float64(origin.Y))
+
+  // Grid lines (x-->)
+  dx, dy = 0.0, 0.0
+  for dx = 1.0; dx < f.Max.X; dx += 1.0 {
+    gridPt := f.getRealmPixel(x + dx, y)
+    p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
+  }
+
+  // Grid lines (<--x)
+  dx, dy = 0.0, 0.0
+  for dx = -1.0; dx >= f.Min.X; dx -= 1.0 {
+    gridPt := f.getRealmPixel(x + dx, y)
+    p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
+  }
+
+  // Grid lines (y-->)
+  dx, dy = 0.0, 0.0
+  for dy = 1.0; dy < f.Min.Y; dy += 1.0 {
+    gridPt := f.getRealmPixel(x, y + dy)
+    p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
+  }
+
+  // Grid lines (<--y)
+  dx, dy = 0.0, 0.0
+  for dy = -1.0; dy >= f.Max.Y; dy -= 1.0 {
+    gridPt := f.getRealmPixel(x, y + dy)
+    p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
+  }
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 func (f *Field) RenderLast() {
 
-  if configOptions.ShowGridLines {
-    var x,y,dx,dy float32
-
-    x = 0.0
-    y = 0.0
-    origin := f.getRealmPixel(x, y)
-
-    // The origin and major x-y axis
-    p5.StrokeWidth(2)
-    p5.Line(float64(origin.X), float64(f.Bounds.Min.Y), float64(origin.X), float64(f.Bounds.Max.Y))
-    p5.Line(float64(f.Bounds.Min.X), float64(origin.Y), float64(f.Bounds.Max.X), float64(origin.Y))
-
-    // Grid lines (x-->)
-    dx, dy = 0.0, 0.0
-    for dx = 1.0; dx < f.Max.X; dx += 1.0 {
-     gridPt := f.getRealmPixel(x + dx, y)
-     p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
-    }
-
-    // Grid lines (<--x)
-    dx, dy = 0.0, 0.0
-    for dx = -1.0; dx >= f.Min.X; dx -= 1.0 {
-     gridPt := f.getRealmPixel(x + dx, y)
-     p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
-    }
-
-    // Grid lines (y-->)
-    dx, dy = 0.0, 0.0
-    for dy = 1.0; dy < f.Min.Y; dy += 1.0 {
-     gridPt := f.getRealmPixel(x, y + dy)
-     p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
-    }
-
-    // Grid lines (<--y)
-    dx, dy = 0.0, 0.0
-    for dy = -1.0; dy >= f.Max.Y; dy -= 1.0 {
-     gridPt := f.getRealmPixel(x, y + dy)
-     p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
-    }
-
-  }
-
+  //configOptions.ShowHorizAxis = false
   if configOptions.ShowHorizAxis {
-
+    f.showHorizAxis()
   }
 
+  //configOptions.ShowVertAxis = false
   if configOptions.ShowVertAxis {
+    f.showVertAxis()
+  }
 
+  //configOptions.ShowGridLines = false
+  if configOptions.ShowGridLines {
+    f.showHorizAxis()
+    f.showVertAxis()
+    f.showGridLines()
   }
 
 }
