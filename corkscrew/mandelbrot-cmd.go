@@ -120,7 +120,7 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
   realmRect := R2(opts.Left, opts.Top, opts.Right, opts.Bottom)
   fixed     := NormalizeRealm(realmRect, image.Rect(0, 0, opts.Width, opts.Height))
   opts.Left, opts.Top, opts.Right, opts.Bottom = fixed.Parts()
-  
+
   return opts
 }
 

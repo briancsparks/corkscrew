@@ -43,9 +43,13 @@ func NormalizeRealm(realmRect Rec2, rec image.Rectangle) Rec2 {
 
 //RealmToScreen will return the Point the represents the input Vec2 point
 func RealmToScreen(pt Vec2, realmRect Rec2, rec image.Rectangle) image.Point {
+  //pt: Vec2{-1.0,1.0},
   //realmRect: Rec2{Min: Vec2{-2.25,1.2}, Max: Vec2{1.35,-1.2}},
   //rec: image.Rect(0, 0, 1200, 800),
-  //return image.Point{X: 1, Y: 1}
+  //return image.Point{X: 416 Y: 66}
+
+  //      pt.X       pXdist     percentX       x
+  // x:   -1.0  -->   1.25  -->  0.3472  -->  416
 
   ptXdist   := pt.X - realmRect.Min.X
   percentX  := ptXdist / realmRect.Dx()
@@ -58,3 +62,24 @@ func RealmToScreen(pt Vec2, realmRect Rec2, rec image.Rectangle) image.Point {
   return image.Point{X: x, Y: y}
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
+func ScreenToRealm(pt image.Point, realmRect Rec2, rec image.Rectangle) Vec2 {
+  //pt: image.Point{X: 416 Y: 66},
+  //realmRect: Rec2{Min: Vec2{-2.25,1.2}, Max: Vec2{1.35,-1.2}},
+  //rec: image.Rect(0, 0, 1200, 800),
+  //return Vec2{-1.0,1.0}
+
+  //       x      percentX     pXdist        x
+  // x:  416  -->  0.3472  -->  1.25  -->  -1.o
+
+  percentX := float32(pt.X) / float32(rec.Dx())
+  pXdist   := percentX * realmRect.Dx()
+  x        := pXdist + realmRect.Min.X
+
+  percentY := 1.0 - (float32(pt.Y) / float32(rec.Dy()))
+  pYdist   := percentY * realmRect.Dy()
+  y        := pYdist + realmRect.Max.Y
+
+  return Vec2{x, y}
+}

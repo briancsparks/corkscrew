@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/go-p5/p5 v0.13.0
+	github.com/google/go-cmp v0.5.8
 	github.com/lucasb-eyer/go-colorful v1.2.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.5.0
