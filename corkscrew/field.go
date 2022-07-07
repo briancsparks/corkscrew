@@ -124,6 +124,14 @@ func (f *Field) getPixel(x, y float32) *image.Point {
 
 // --------------------------------------------------------------------------------------------------------------------
 
+func (f *Field) getRealmPixel(x, y float32) *image.Point {
+  //func RealmToScreen(pt Vec2, realmRect Rec2, rec image.Rectangle) image.Point {
+  pt := RealmToScreen(Vec2{x, y}, Rec2{f.Min, f.Max}, f.Bounds)
+  return &pt
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 func (f *Field) Render() {
 
 }
@@ -133,11 +141,12 @@ func (f *Field) Render() {
 func (f *Field) RenderLast() {
 
   if configOptions.ShowGridLines {
-    var x,y/*,dx,dy*/ float32
+    var x,y,dx,dy float32
 
     x = 0.0
     y = 0.0
-    origin := f.getPixel(x, y)
+    //origin := f.getPixel(x, y)
+    origin := f.getRealmPixel(x, y)
     //v2Look := Vec2{x, y}
     //_, origin := GridPt2(v2Look, f.Min, f.Max, f.Bounds, f.ShowMathy)
 
@@ -146,33 +155,33 @@ func (f *Field) RenderLast() {
     p5.Line(float64(origin.X), float64(f.Bounds.Min.Y), float64(origin.X), float64(f.Bounds.Max.Y))
     p5.Line(float64(f.Bounds.Min.X), float64(origin.Y), float64(f.Bounds.Max.X), float64(origin.Y))
 
-    //// Grid lines (x-->)
-    //dx, dy = 0.0, 0.0
-    //for dx = 1.0; dx < f.Max.X; dx += 1.0 {
-    //  gridPt := f.getPixel(x + dx, y)
-    //  p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
-    //}
-    //
-    //// Grid lines (<--x)
-    //dx, dy = 0.0, 0.0
-    //for dx = -1.0; dx >= f.Min.X; dx -= 1.0 {
-    //  gridPt := f.getPixel(x + dx, y)
-    //  p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
-    //}
-    //
-    //// Grid lines (y-->)
-    //dx, dy = 0.0, 0.0
-    //for dy = 1.0; dy < f.Max.Y; dy += 1.0 {
-    //  gridPt := f.getPixel(x, y + dy)
-    //  p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
-    //}
-    //
-    //// Grid lines (<--y)
-    //dx, dy = 0.0, 0.0
-    //for dy = -1.0; dy >= f.Min.Y; dy -= 1.0 {
-    //  gridPt := f.getPixel(x, y + dy)
-    //  p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
-    //}
+    // Grid lines (x-->)
+    dx, dy = 0.0, 0.0
+    for dx = 1.0; dx < f.Max.X; dx += 1.0 {
+     gridPt := f.getRealmPixel(x + dx, y)
+     p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
+    }
+
+    // Grid lines (<--x)
+    dx, dy = 0.0, 0.0
+    for dx = -1.0; dx >= f.Min.X; dx -= 1.0 {
+     gridPt := f.getRealmPixel(x + dx, y)
+     p5.Line(float64(gridPt.X), float64(f.Bounds.Min.Y), float64(gridPt.X), float64(f.Bounds.Max.Y))
+    }
+
+    // Grid lines (y-->)
+    dx, dy = 0.0, 0.0
+    for dy = 1.0; dy < f.Min.Y; dy += 1.0 {
+     gridPt := f.getRealmPixel(x, y + dy)
+     p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
+    }
+
+    // Grid lines (<--y)
+    dx, dy = 0.0, 0.0
+    for dy = -1.0; dy >= f.Max.Y; dy -= 1.0 {
+     gridPt := f.getRealmPixel(x, y + dy)
+     p5.Line(float64(f.Bounds.Min.X), float64(gridPt.Y), float64(f.Bounds.Max.X), float64(gridPt.Y))
+    }
 
   }
 
