@@ -14,7 +14,7 @@ import (
 type Field struct {
   // Properties that are math-centric.
   // - They act like a math-head would expect (y increases UP the screen) and such.
-  Min, Max Vec2                                                     // (-50.0, -50.0), (50.0, 50.0)
+  Min, Max Vec2                                                     // (-50.0, 50.0), (50.0, -50.0)
 
   // Properties that are comptuer-centric
   Bounds image.Rectangle                                            // 0, 0, 800, 600
@@ -69,8 +69,8 @@ func UnitsPerPix8(fMinX, fMinY, fMaxX, fMaxY float32, iMinX, iMinY, iMaxX, iMaxY
 
 // --------------------------------------------------------------------------------------------------------------------
 
-func (f *Field) mkTile(w, h int, rw, rh, centerx, centery float32) *Tile {
-  return NewTile(w, h , rw, rh, centerx, centery, f)
+func (f *Field) mkTile(id int32, l, t, r, b int, rw, rh, centerx, centery float32) *Tile {
+  return NewTile(id, l, t, r, b, rw, rh, centerx, centery, f)
 }
 
 // --------------------------------------------------------------------------------------------------------------------

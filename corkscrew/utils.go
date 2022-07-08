@@ -7,8 +7,12 @@ import (
   colorful "github.com/lucasb-eyer/go-colorful"
 )
 
+// -------------------------------------------------------------------------------------------------------------------
+
 var palette []colorful.Color
 var black, white colorful.Color
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func init() {
   palette = gradientGen()
@@ -16,6 +20,8 @@ func init() {
   black, _ = colorful.Hex("#000000")
   white, _ = colorful.Hex("#000000")
 }
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func getColor(iterations, maxIterations int) colorful.Color {
   percentage := float32(iterations) / float32(maxIterations)
@@ -33,6 +39,8 @@ func getColor(iterations, maxIterations int) colorful.Color {
   return result
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func asserter(test bool) bool {
   if !test {
     breakout("", true)
@@ -40,17 +48,23 @@ func asserter(test bool) bool {
   return !test
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func assertMsg(test bool, msg string) {
   if !test {
     breakout(msg, false)
   }
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func assert(test bool) {
   if !test {
     breakout("", false)
   }
 }
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func breakout(msg string, quiet bool) {
   if !quiet {

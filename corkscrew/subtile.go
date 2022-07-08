@@ -6,6 +6,8 @@ import (
   "image"
 )
 
+// -------------------------------------------------------------------------------------------------------------------
+
 type SubTilizer struct {
   Field           *Field
   ParentTile      *Tile
@@ -16,6 +18,8 @@ type SubTilizer struct {
   currIndex int
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func NewSubTilizer(parent *Tile, field *Field) *SubTilizer {
   return &SubTilizer{
     Field:        field,
@@ -23,21 +27,31 @@ func NewSubTilizer(parent *Tile, field *Field) *SubTilizer {
   }
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func (st *SubTilizer) PixelCount() int64 {
   return int64(st.Dx() * st.Dy())
 }
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func (st *SubTilizer) Dx() int {
   return st.ParentTile.Rect.Dx()
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func (st *SubTilizer) Dy() int {
   return st.ParentTile.Rect.Dy()
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func (st *SubTilizer) GetCurrIndex() int {
   return st.currIndex
 }
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func (st *SubTilizer) Curr() (*Vec2, *image.Point) {
   p := st.ParentTile
@@ -56,6 +70,8 @@ func (st *SubTilizer) Curr() (*Vec2, *image.Point) {
   return &Vec2{x, y}, &pt
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func (st *SubTilizer) Next() (*Vec2, *image.Point) {
   p := st.ParentTile
   pt := st.CurrentIndexPoint
@@ -73,13 +89,16 @@ func (st *SubTilizer) Next() (*Vec2, *image.Point) {
     return nil, nil
   }
 
-  x := halfCoord(p.Min.X, p.Max.X, p.Rect.Min.X, p.Rect.Max.X, pt.X, false)
-  y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt.Y, false)
+  pt2 := image.Point{X: pt.X + p.Rect.Min.X, Y: pt.Y + p.Rect.Min.Y}
+  x := halfCoord(p.Min.X, p.Max.X, p.Rect.Min.X, p.Rect.Max.X, pt2.X, false)
+  y := halfCoord(p.Min.Y, p.Max.Y, p.Rect.Min.Y, p.Rect.Max.Y, pt2.Y, false)
 
   st.CurrentIndexPoint = pt
 
-  return &Vec2{x, y}, &pt
+  return &Vec2{x, y}, &pt2
 }
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func halfCoord(fmin, fmax float32, imin, imax int, midpt int, backwards bool) float32 {
   widthOfIcell, half, offset := computeHalfHelper(fmin, fmax, imin, imax, midpt)
@@ -93,6 +112,8 @@ func halfCoord(fmin, fmax float32, imin, imax int, midpt int, backwards bool) fl
 
   return center
 }
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func computeHalfHelper(fmin, fmax float32, imin, imax int, index int) ( cellwidth, half float32, offset int) {
   fwidth := fmax - fmin

@@ -12,7 +12,7 @@ import (
 )
 
 type MandelbrotTile struct {
-  //X, Y   float64
+  ID      int32
   Min, Max Vec2
   Bounds image.Rectangle
 
@@ -21,10 +21,9 @@ type MandelbrotTile struct {
 
 // TODO: remove Joe
 
-func NewMandelbrotTile(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, joe *Joe) *MandelbrotTile {
+func NewMandelbrotTile(id int32, min, max Vec2/*, x, y float64*/, bounds image.Rectangle, joe *Joe) *MandelbrotTile {
   m := &MandelbrotTile{
-    //X:      x,
-    //Y:      y,
+    ID:     id,
     Min:    min,
     Max:    max,
     Bounds: bounds,
@@ -71,7 +70,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
     fheight := Dy(m.Min, m.Max)
     centerx := mathCenterPoint(m.Min.X, m.Max.X)
     centery := mathCenterPoint(m.Min.Y, m.Max.Y)
-    tile := tileMaker.mkTile(m.Bounds.Dx(), m.Bounds.Dy(), fwidth, fheight, centerx, centery)
+    tile := tileMaker.mkTile(1, m.Bounds.Min.X, m.Bounds.Min.Y, m.Bounds.Max.X, m.Bounds.Max.Y, fwidth, fheight, centerx, centery)
     //pixelCount := tile.sub.PixelCount()
     iterCounts := make([]int, maxIterations + 2)
 
@@ -91,8 +90,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
       c = complex(v2.X, v2.Y)
       iterations = 0
       totalPixels += 1
-      //fmt.Printf("Beginning work on pixel (%4d, %4d) [point: (%7.5f, %7.5f)]\n", pixel.X, pixel.Y, v2.X, v2.Y)
-      //fmt.Printf("--Putting0 #%v pixel: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", iterations, pixel, z, c, "N/A", "N/A", tileDone)
+      fmt.Printf("[%2d]: Beginning work on pixel (%4d, %4d) [point: (%7.5f, %7.5f)]\n", m.ID, pixel.X, pixel.Y, v2.X, v2.Y)
+      //fmt.Printf("[%2d]: --Putting0 #%v pixel: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", m.ID, iterations, pixel, z, c, "N/A", "N/A", tileDone)
     }
 
     if !tileDone {
@@ -124,8 +123,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
           c = complex(v2.X, v2.Y)
           iterations = 0
           totalPixels += 1
-          //fmt.Printf("Beginning work on pixel (%4d, %4d) [point: (%7.5f, %7.5f)]\n", pixel.X, pixel.Y, v2.X, v2.Y)
-          //fmt.Printf("--Putting1 #%v pixel: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", iterations, pixel, z, c, tooMany, tooFar, tileDone)
+          fmt.Printf("[%2d]: Beginning work on pixel (%4d, %4d) [point: (%7.5f, %7.5f)]\n", m.ID, pixel.X, pixel.Y, v2.X, v2.Y)
+          //fmt.Printf("[%2d]: --Putting1 #%v pixel: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", m.ID, iterations, pixel, z, c, tooMany, tooFar, tileDone)
         }
 
         //index := tile.sub.GetCurrIndex()
@@ -154,7 +153,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
           }
           //assertMsg(distSq <= thresholdDist, fmt.Sprintf("distSq: %v, (%v)", distSq, thresholdDist))
         }
-        //fmt.Printf("%05d ---- Counted #%v max: %v, Iterated #%v max: %v, pix: %v,  d: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", totalLoops, count, maxCount, iterations, maxIterations, pixel, distSq, z, c, tooMany, tooFar, tileDone)
+        fmt.Printf("[%2d]: %05d ---- Counted #%v max: %v, Iterated #%v max: %v, pix: %v,  d: %v  z: %v c: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", m.ID, totalLoops, count, maxCount, iterations, maxIterations, pixel, distSq, z, c, tooMany, tooFar, tileDone)
 
         if tooMany {
           // Its stuck
@@ -171,7 +170,7 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
         // If we are done with this pixel, report it or whatever
         if doneWithCurrent {
           iterCounts[iterations] += 1
-          if pixel.X == 0 {
+          if pixel.X == m.Bounds.Min.X {
             tilechan <- tile
           }
 
@@ -182,8 +181,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
           onePixRect := image.Rect(pixel.X, pixel.Y, pixel.X + 1, pixel.Y + 1)
           draw.Draw(tile.Img, onePixRect, &image.Uniform{C: color}, image.Point{}, draw.Src)
 
-          //fmt.Printf("Final #%v pixel: %v  Z: %v, C: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", iterations, color, z, c, tooMany, tooFar, tileDone)
-          joe.dataChannels.messages <- fmt.Sprintf("%v: %v: %v %v", iterations, pixel, z, color)
+          fmt.Printf("[%2d]: Final #%v pixel: %v  Z: %v, C: %v, [[tooMany: %v, tooFar: %v, done: %v]]\n", m.ID, iterations, color, z, c, tooMany, tooFar, tileDone)
+          joe.dataChannels.messages <- fmt.Sprintf("[%2d]: %v: %v: %v %v", m.ID, iterations, pixel, z, color)
         }
 
       }
@@ -191,9 +190,9 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
 
     if tileDone {
       elapsed := time.Since(start)
-      //fmt.Printf("elapsed sec: %f, micro: %d, milli: %d, nano: %d\n", elapsed.Seconds(), elapsed.Microseconds(), elapsed.Milliseconds(), elapsed.Nanoseconds())
-      fmt.Printf("Time: %f sec -- Loops: [%v], Pixels: %v, fast: %v, fail: %v\n", elapsed.Seconds(), totalLoops, totalPixels, totalFast, totalFails)
-      fmt.Printf("Iter counts: %v\n", iterCounts)
+      //fmt.Printf("[%2d]: elapsed sec: %f, micro: %d, milli: %d, nano: %d\n", m.ID, elapsed.Seconds(), elapsed.Microseconds(), elapsed.Milliseconds(), elapsed.Nanoseconds())
+      fmt.Printf("[%2d]: Time: %f sec -- Loops: [%v], Pixels: %v, fast: %v, fail: %v\n", m.ID, elapsed.Seconds(), totalLoops, totalPixels, totalFast, totalFails)
+      fmt.Printf("[%2d]: Iter counts: %v\n", m.ID, iterCounts)
       tilechan <- tile
     }
   }()

@@ -35,7 +35,8 @@ var (
 var mandelOpts      MandelOptions
 var field           *Field
 var joe             *Joe
-var mandel          *MandelbrotTile
+var mandel2         *MandelbrotTile
+var mandel          *FieldSplitter
 var tilechan         chan *Tile
 var quit             chan struct{}
 
@@ -56,7 +57,7 @@ func ShowMandelbrotSet(opts_ MandelOptions) error {
 
   fmin, fmax := field.FBounds()
 
-  mandel  = NewMandelbrotTile(fmin, fmax, userRect, joe)
+  mandel  = NewFieldSplitter(fmin, fmax, userRect, joe)
 
   tilechan, err := joe.Run(quit)
   if err != nil {
@@ -127,6 +128,8 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
   return opts
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func (opts *MandelOptions) GetLeft() float32 {
  if opts.Left != 0 {
    return opts.Left
@@ -137,6 +140,8 @@ func (opts *MandelOptions) GetLeft() float32 {
  return -2.1
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func oneOrTheOther(one, other int) int {
   if one != 0 {
     return one
@@ -144,6 +149,8 @@ func oneOrTheOther(one, other int) int {
 
   return other
 }
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func oneOrTheOtherF(one, other float32) float32 {
   if one != 0 {

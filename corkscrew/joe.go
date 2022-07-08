@@ -7,10 +7,13 @@ import (
   "sync"
 )
 
+// --------------------------------------------------------------------------------------------------------------------
+
 type Joe struct {
   Field *Field
   Tiles []*Tile
   MainTile *Tile
+  IdTiles   map[int32]*Tile
   message string
 
   dataChannels DataChannels
@@ -18,10 +21,14 @@ type Joe struct {
   lock sync.RWMutex
 }
 
+// --------------------------------------------------------------------------------------------------------------------
+
 type DataChannels struct {
   tiles     chan *Tile
   messages  chan string
 }
+
+// --------------------------------------------------------------------------------------------------------------------
 
 func NewJoe(f *Field) *Joe {
   j := &Joe{
@@ -31,23 +38,28 @@ func NewJoe(f *Field) *Joe {
     tiles: make(chan *Tile),
     messages: make(chan string),
   }
+  j.IdTiles = map[int32]*Tile{}
 
-  j.Tiles = append(j.Tiles, NewTile(70, 70, 5.0, 5.0, 0.0, 0.0, f))
+  //j.Tiles = append(j.Tiles, NewTile(70, 70, 5.0, 5.0, 0.0, 0.0, f))
 
   return j
 }
 
-func (j *Joe) Run(quit chan struct{}) (chan *Tile, error) {
-  ch := make(chan *Tile)
+// --------------------------------------------------------------------------------------------------------------------
 
+func (j *Joe) Run(quit chan struct{}) (chan *Tile, error) {
+  tilechan := make(chan *Tile)
+
+  // TODO: use wg
 
   go func() {
     for {
       select {
-      case t := <-ch:
-        //j.Tiles = append(j.Tiles, t)
-        //j.AppendTile(t)
-        j.SetMainTile(t)
+      case tile := <-tilechan:
+        //j.Tiles = append(j.Tiles, tile)
+        //j.AppendTile(tile)
+        //j.SetMainTile(tile)
+        j.SetIdTile(tile)
 
       case msg := <-j.dataChannels.messages:
         j.message = msg
@@ -58,8 +70,19 @@ func (j *Joe) Run(quit chan struct{}) (chan *Tile, error) {
     }
   }()
 
-  return ch, nil
+  return tilechan, nil
 }
+
+// --------------------------------------------------------------------------------------------------------------------
+
+func (j *Joe) SetIdTile(t *Tile) {
+  j.lock.Lock()
+  defer j.lock.Unlock()
+
+  j.IdTiles[t.ID] = t
+}
+
+// --------------------------------------------------------------------------------------------------------------------
 
 func (j *Joe) SetMainTile(t *Tile) {
   j.lock.Lock()
@@ -68,6 +91,8 @@ func (j *Joe) SetMainTile(t *Tile) {
   j.MainTile = t
 }
 
+// --------------------------------------------------------------------------------------------------------------------
+
 func (j *Joe) AppendTile(t *Tile) {
   j.lock.Lock()
   defer j.lock.Unlock()
@@ -75,16 +100,21 @@ func (j *Joe) AppendTile(t *Tile) {
   j.Tiles = append(j.Tiles, t)
 }
 
+// --------------------------------------------------------------------------------------------------------------------
+
 func (j *Joe) Render() {
   // Get the lock for the operation
   j.lock.RLock()
   defer j.lock.RUnlock()
 
   for _, tile := range j.Tiles {
-    p5.DrawImage(tile.Img, float64(tile.Min.X), float64(tile.Min.Y))
+    p5.DrawImage(tile.Img, float64(tile.Rect.Min.X), float64(tile.Rect.Min.Y))
   }
   if j.MainTile != nil {
-    p5.DrawImage(j.MainTile.Img, float64(j.MainTile.Min.X), float64(j.MainTile.Min.Y))
+    p5.DrawImage(j.MainTile.Img, float64(j.MainTile.Rect.Min.X), float64(j.MainTile.Rect.Min.Y))
+  }
+  for _, tile := range j.IdTiles {
+    p5.DrawImage(tile.Img, float64(tile.Rect.Min.X), float64(tile.Rect.Min.Y))
   }
 
   //p5.TextSize(24)

@@ -14,7 +14,11 @@ func init() {
 
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 type Tile struct {
+  ID        int32
+
   Img      *image.RGBA
   Min, Max Vec2
   Rect     image.Rectangle
@@ -22,26 +26,31 @@ type Tile struct {
   sub      *SubTilizer
 }
 
-func NewTile(w, h int, rw, rh, centerx, centery float32, field *Field) *Tile {
+// -------------------------------------------------------------------------------------------------------------------
+
+func NewTile(id int32, l, t, r, b int, rw, rh, centerx, centery float32, field *Field) *Tile {
   rrx, rry := rw / 2.0, rh / 2.0
   min, max := minMax(centerx-rrx, centery-rry, centerx+rrx, centery+rry, field)
-  rect := image.Rect(0, 0, w, h)
+  rect := image.Rect(l, t, r, b)
 
-  t := &Tile{
+  tile := &Tile{
+    ID:   id,
     Min:  min,
     Max:  max,
     Rect: rect,
     Img:  image.NewRGBA(rect),
   }
-  t.sub = NewSubTilizer(t, field)
+  tile.sub = NewSubTilizer(tile, field)
 
   c := colorful.WarmColor()
   img := &image.Uniform{C: color.RGBA{R: uint8(c.R * 255), G: uint8(c.G * 255), B: uint8(c.B * 255), A: 255}}
-  draw.Draw(t.Img, t.Img.Bounds(), img, image.Point{}, draw.Src)
+  draw.Draw(tile.Img, tile.Img.Bounds(), img, image.Point{}, draw.Src)
 
-  return t
+  return tile
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 type tileMaker interface {
-  mkTile(w, h int, rw, rh, centerx, centery float32) *Tile
+  mkTile(id int32, l, t, r, b int, rw, rh, centerx, centery float32) *Tile
 }

@@ -94,6 +94,42 @@ func ScreenToRealm(pt image.Point, realmRect Rec2, rec image.Rectangle) Vec2 {
 
 // -------------------------------------------------------------------------------------------------------------------
 
+func ScreenToRealm4Pts(pt image.Point, v2Min, v2Max Vec2, gridMin, gridMax image.Point) Vec2 {
+  //pt: image.Point{X: 416 Y: 66},
+  //realmRect: Rec2{Min: Vec2{-2.25,1.2}, Max: Vec2{1.35,-1.2}},
+  //rec: image.Rect(0, 0, 1200, 800),
+  //return Vec2{-1.0,1.0}
+
+  //       x      percentX     pXdist        x
+  // x:  416  -->  0.3472  -->  1.25  -->  -1.o
+
+  percentX := float32(pt.X) / float32(ptsDx(gridMin, gridMax))
+  pXdist   := percentX * Dx(v2Min, v2Max)
+  x        := pXdist + v2Min.X
+
+  percentY := 1.0 - (float32(pt.Y) / float32(ptsDy(gridMin, gridMax)))
+  pYdist   := percentY * Dy(v2Min, v2Max)
+  y        := pYdist + v2Max.Y
+
+  return Vec2{x, y}
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func ptsDx(gridMin, gridMax image.Point) int {
+  img := image.Rectangle{Min: gridMin, Max: gridMax}
+  return img.Dx()
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func ptsDy(gridMin, gridMax image.Point) int {
+  img := image.Rectangle{Min: gridMin, Max: gridMax}
+  return img.Dy()
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
 func ScreenToRealmVec2(pt image.Point, realmRectMin, realmRectMax Vec2, rec image.Rectangle) Vec2 {
   realmRect := Rec2{realmRectMin, realmRectMax}
   return ScreenToRealm(pt, realmRect, rec)

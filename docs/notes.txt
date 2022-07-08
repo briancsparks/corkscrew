@@ -1,0 +1,112 @@
+1.2 - - 2.1 = 3.3       (0 -- 2.1) / 3.3   =  63%
+1.2 - - 1.2 = 2.4       (1.2 - 0) / 2.4    =  50%
+
+1200 - 0    = 1200      36% of 1200  =  436
+800 - 0     = 800       50% of 800   =  400
+
+
+
+
+----------------------------
+(-2.1,  1.2)                        (1.2, -1.2)             [3.3, 2.4]
+(0,     0)                          (1200, 800)             [1200, 800]
+
+
+(0, 0)
+X:
+  3.3 / 1200 -> 0.00275   unitsPerPixel
+
+Y:
+  2.4 / 800  -> 0.003     unitsPerPixel
+
+----------------------------
+Want 0.003, is more zoomed-out, does not lose info. To get X to also
+have 0.003:
+
+  Have a width of 1200 pix to work with. At 0.003 unitsPerPixel, gives
+  us 3.6 Units, (up from 3.3).
+  new-span  (3.3 * 1200)    -->  3.6
+  Diff:     (3.6 - 3.3)     -->  0.3
+  Half:                     -->  0.15
+  AddLeft:  (-2.1 - 0.15)   --> -2.25
+  AddRight: (1.2  + 0.15)   -->  1.35
+
+----------------------------
+Now, the play field is adjusted and accurate.
+
+(-2.25, 1.2)                        (1.35, -1.2)             [3.6,  2.4]          *********
+(0,     0)                          (1200,  800)             [1200, 800]
+
+----------------------------
+Now, figure out where (-1, 1) translates to:
+
+X:
+  From left (-2.25), point's X (-1.0) is  -->   1.25 into the area.
+  From left, the right-side (1.35) is  -->      3.60 into the area. (Should not need to compute)
+  X: (1.25 / 3.60)  -->                         0.3472 (34.72%)
+    0.3472 * pixel-width (1200)  -->            416 pixels
+
+Y:
+  From top (1.2), point's Y (1.0) is  -->       0.2 into the area.
+  From top, the bottom (-1.2) is  -->           2.4 into the area. (Should not need to compute)
+  Y: (0.2 / 2.4)  -->                           0.0833
+    0.0833 * pixel-height (800)  -->            66 pixels
+
+
+(1, 1)
+
+
+1200 x 800
+
+
+--------------------------------
+1920 x 1080    (60% x 74%)
+
+
+Showing: [(-2.25000, 1.20000) - (1.35000, -1.20000)]  -->  [(   0,    0) - (1200,  800)]
+
+[(       0,       0) - (   1200,      800)]
+[(-2.25000, 1.20000) - (1.35000, -1.20000)]     (w: 3.6,   h: 2.4)
+
+[(       0,       0) - (   1199,      799)]
+[(-4.04100, 2.39700) - (3.14700, -2.39700)]     (w: 7.188, h: 4.794)
+
+Beginning work on pixel (   0,    0) [point: (-4.04700, -2.39700)]
+Beginning work on pixel (   1,    0) [point: (-4.04100,  2.39700)]
+
+Beginning work on pixel ( 600,  400) [point: (-0.44700, -0.00300)]
+
+Beginning work on pixel ( 674,  399) [point: (-0.00300,  0.00300)]
+Beginning work on pixel ( 675,  399) [point: ( 0.00300,  0.00300)]
+Beginning work on pixel ( 674,  400) [point: (-0.00300, -0.00300)]
+Beginning work on pixel ( 675,  400) [point: ( 0.00300, -0.00300)]
+
+Beginning work on pixel (1199,  799) [point: (3.14700, -2.39700)]
+Beginning work on pixel (   0,  800) [point: (-4.04700, -2.40300)]
+
+
+--------------------------------
+
+(-3/7 + -e/20i)
+
+http://www.cuug.ab.ca/dewara/mandelbrot/Mandelbrowser.html
+
+X = -0.7463
+Y = 0.1102
+R = 0.005
+
+X = -0.7453
+Y = 0.1127
+R = 6.5E-4
+
+X = -0.74529
+Y = 0.113075
+R = 1.5E-4
+
+X = -0.745428
+Y = 0.113009
+R = 3.0E-5
+
+X = -0.16
+Y = 1.0405
+R = 0.026
