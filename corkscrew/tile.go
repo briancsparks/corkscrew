@@ -17,7 +17,7 @@ func init() {
 // -------------------------------------------------------------------------------------------------------------------
 
 type Tile struct {
-  ID        int32
+  ID        int
 
   Img      *image.RGBA
   Min, Max Vec2
@@ -28,7 +28,7 @@ type Tile struct {
 
 // -------------------------------------------------------------------------------------------------------------------
 
-func NewTile(id int32, l, t, r, b int, rw, rh, centerx, centery float32, field *Field) *Tile {
+func NewTile(id int, l, t, r, b int, rw, rh, centerx, centery float32, field *Field) *Tile {
   rrx, rry := rw / 2.0, rh / 2.0
   min, max := minMax(centerx-rrx, centery-rry, centerx+rrx, centery+rry, field)
   rect := image.Rect(l, t, r, b)
@@ -52,5 +52,5 @@ func NewTile(id int32, l, t, r, b int, rw, rh, centerx, centery float32, field *
 // -------------------------------------------------------------------------------------------------------------------
 
 type tileMaker interface {
-  mkTile(id int32, l, t, r, b int, rw, rh, centerx, centery float32) *Tile
+  mkTile(id int, l, t, r, b int, rw, rh, centerx, centery float32) *Tile
 }

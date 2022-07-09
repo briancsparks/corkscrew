@@ -16,7 +16,7 @@ type FieldSplitter struct {
   joe *Joe
 }
 
-func NewFieldSplitter(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, joe *Joe) *FieldSplitter {
+func NewFieldSplitter(numSplits int, min, max Vec2/*, x, y float64*/, bounds image.Rectangle, joe *Joe) *FieldSplitter {
   Validate(min, max)
   m := &FieldSplitter{
     Min:    min,
@@ -25,6 +25,7 @@ func NewFieldSplitter(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, j
   }
   m.joe = joe
 
+  baseId := numSplits * 1000
   if m.Bounds.Dx() > m.Bounds.Dy() {
     midpoint := m.Bounds.Dx() / 2
     leftMax := image.Point{X: midpoint, Y: m.Bounds.Max.Y}
@@ -32,8 +33,13 @@ func NewFieldSplitter(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, j
     leftMaxRealm := ScreenToRealm4Pts(leftMax,  min, max, bounds.Min, bounds.Max)
     rightMinRealm := ScreenToRealm4Pts(rightMin, min, max, bounds.Min, bounds.Max)
 
-    m.first = NewMandelbrotTile(0, min, leftMaxRealm, image.Rectangle{Min: bounds.Min, Max: leftMax}, joe)
-    m.second = NewMandelbrotTile(1, rightMinRealm, max, image.Rectangle{Min: rightMin, Max: bounds.Max}, joe)
+    if numSplits <= 1 {
+      m.first = NewMandelbrotTile(baseId + 0, min, leftMaxRealm, image.Rectangle{Min: bounds.Min, Max: leftMax}, joe)
+      m.second = NewMandelbrotTile(baseId + 1, rightMinRealm, max, image.Rectangle{Min: rightMin, Max: bounds.Max}, joe)
+    } else {
+      _ = NewFieldSplitter(numSplits - 1, min, leftMaxRealm, image.Rectangle{Min: bounds.Min, Max: leftMax}, joe)
+      _ = NewFieldSplitter(numSplits - 1, rightMinRealm, max, image.Rectangle{Min: rightMin, Max: bounds.Max}, joe)
+    }
 
   } else {
     midpoint := m.Bounds.Dy() / 2
@@ -42,8 +48,13 @@ func NewFieldSplitter(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, j
     topMaxRealm := ScreenToRealm4Pts(topMax, min, max, bounds.Min, bounds.Max)
     bottomMinRealm := ScreenToRealm4Pts(bottomMin, min, max, bounds.Min, bounds.Max)
 
-    m.first = NewMandelbrotTile(0, min, topMaxRealm, image.Rectangle{Min: bounds.Min, Max: topMax}, joe)
-    m.second = NewMandelbrotTile(1, bottomMinRealm, max, image.Rectangle{Min: bottomMin, Max: bounds.Max}, joe)
+    if numSplits <= 1 {
+      m.first = NewMandelbrotTile(baseId + 0, min, topMaxRealm, image.Rectangle{Min: bounds.Min, Max: topMax}, joe)
+      m.second = NewMandelbrotTile(baseId + 1, bottomMinRealm, max, image.Rectangle{Min: bottomMin, Max: bounds.Max}, joe)
+    } else {
+      _ = NewFieldSplitter(numSplits - 1, min, topMaxRealm, image.Rectangle{Min: bounds.Min, Max: topMax}, joe)
+      _ = NewFieldSplitter(numSplits - 1, bottomMinRealm, max, image.Rectangle{Min: bottomMin, Max: bounds.Max}, joe)
+    }
   }
 
   return m
@@ -57,8 +68,8 @@ func (m *FieldSplitter) Run(quit chan struct{}, tileMaker tileMaker, tilechan ch
   go func() {
     wg.Done()
 
-    m.first.Run(quit, tileMaker, tilechan)
-    m.second.Run(quit, tileMaker, tilechan)
+    _ = m.first.Run(quit, tileMaker, tilechan)
+    _ = m.second.Run(quit, tileMaker, tilechan)
 
   }()
   wg.Wait()

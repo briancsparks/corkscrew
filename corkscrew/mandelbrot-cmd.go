@@ -35,8 +35,8 @@ var (
 var mandelOpts      MandelOptions
 var field           *Field
 var joe             *Joe
-//var mandel          *MandelbrotTile
-var mandel          *FieldSplitter
+var mandel          *MandelbrotTile
+var splitter        *FieldSplitter
 var tilechan         chan *Tile
 var quit             chan struct{}
 
@@ -57,15 +57,22 @@ func ShowMandelbrotSet(opts_ MandelOptions) error {
 
   fmin, fmax := field.FBounds()
 
-  //mandel  = NewMandelbrotTile(0, fmin, fmax, userRect, joe)
-  mandel  = NewFieldSplitter(fmin, fmax, userRect, joe)
+  if runtimeOptions.multiThreaded {
+    splitter  = NewFieldSplitter(runtimeOptions.maxSplits, fmin, fmax, userRect, joe)
+  } else {
+    mandel    = NewMandelbrotTile(0, fmin, fmax, userRect, joe)
+  }
 
   tilechan, err := joe.Run(quit)
   if err != nil {
     return err
   }
 
-  err = mandel.Run(quit, field, tilechan)
+  if runtimeOptions.multiThreaded {
+    err = splitter.Run(quit, field, tilechan)
+  } else {
+    err = mandel.Run(quit, field, tilechan)
+  }
   if err != nil {
     return err
   }

@@ -12,7 +12,7 @@ import (
 )
 
 type MandelbrotTile struct {
-  ID      int32
+  ID      int
   Min, Max Vec2
   Bounds image.Rectangle
 
@@ -22,7 +22,7 @@ type MandelbrotTile struct {
 
 // TODO: remove Joe
 
-func NewMandelbrotTile(id int32, min, max Vec2/*, x, y float64*/, bounds image.Rectangle, joe *Joe) *MandelbrotTile {
+func NewMandelbrotTile(id int, min, max Vec2/*, x, y float64*/, bounds image.Rectangle, joe *Joe) *MandelbrotTile {
   Validate(min, max)
   m := &MandelbrotTile{
     ID:     id,

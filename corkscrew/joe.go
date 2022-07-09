@@ -14,7 +14,7 @@ type Joe struct {
   Field *Field
   Tiles []*Tile
   MainTile *Tile
-  IdTiles   map[int32]*Tile
+  IdTiles   map[int]*Tile
   message string
 
   bg          *image.RGBA
@@ -41,7 +41,7 @@ func NewJoe(f *Field) *Joe {
     tiles: make(chan *Tile),
     messages: make(chan string),
   }
-  j.IdTiles = map[int32]*Tile{}
+  j.IdTiles = map[int]*Tile{}
   j.bg = image.NewRGBA(f.Bounds)
 
   //j.Tiles = append(j.Tiles, NewTile(70, 70, 5.0, 5.0, 0.0, 0.0, f))

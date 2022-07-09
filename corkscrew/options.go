@@ -28,17 +28,23 @@ var configOptions ConfigOptions
 
 // -------------------------------------------------------------------------------------------------------------------
 
+type RuntimeOptions struct {
+  multiThreaded       bool
+  maxSplits           int
+}
+var runtimeOptions RuntimeOptions
+
+func init() {
+  runtimeOptions.multiThreaded = true
+  runtimeOptions.maxSplits = 1
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
 type DebugOptions struct {
 
 }
 var debugOptions DebugOptions
-
-// -------------------------------------------------------------------------------------------------------------------
-
-type RuntimeOptions struct {
-
-}
-var runtimeOptions RuntimeOptions
 
 // -------------------------------------------------------------------------------------------------------------------
 

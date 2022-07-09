@@ -69,7 +69,7 @@ func UnitsPerPix8(fMinX, fMinY, fMaxX, fMaxY float32, iMinX, iMinY, iMaxX, iMaxY
 
 // --------------------------------------------------------------------------------------------------------------------
 
-func (f *Field) mkTile(id int32, l, t, r, b int, rw, rh, centerx, centery float32) *Tile {
+func (f *Field) mkTile(id int, l, t, r, b int, rw, rh, centerx, centery float32) *Tile {
   return NewTile(id, l, t, r, b, rw, rh, centerx, centery, f)
 }
 

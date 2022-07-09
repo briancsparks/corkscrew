@@ -1,6 +1,5 @@
 package corkscrew
 
-/* Copyright © 2022 sparksb -- MIT (see LICENSE file) */
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 import (
@@ -8,7 +7,7 @@ import (
 )
 
 type DebugIt struct {
-  ID            int32
+  ID            int
   enabled       bool
   assoc         string
 
@@ -19,7 +18,7 @@ type DebugIt struct {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-func NewDebugIt(ID int32, assoc string) *DebugIt {
+func NewDebugIt(ID int, assoc string) *DebugIt {
   d := &DebugIt{ID: ID, assoc: assoc}
   d.enabled = true
   d.info  = map[string]string{}
