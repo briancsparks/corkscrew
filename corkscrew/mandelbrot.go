@@ -187,8 +187,8 @@ func (m *MandelbrotTile) Run(quit chan struct{}, tileMaker tileMaker, tilechan c
           onePixRect := image.Rect(pixel.X, pixel.Y, pixel.X + 1, pixel.Y + 1)
           draw.Draw(tile.Img, onePixRect, &image.Uniform{C: color}, image.Point{}, draw.Src)
 
-          printfEnd("Final #%v pixel: %v  Z: %v, C: %v, %v\n", iterations, color, z, c, status(tooMany, tooFar, tileDone))
-          joe.dataChannels.messages <- fmt.Sprintf("[%2d]: %v: %v: %v %v", iterations, pixel, z, color)
+          printfEnd("Final #%v, C: %v, pixel: %v,  Z: %v, %v\n", iterations, c, color, z, status(tooMany, tooFar, tileDone))
+          joe.dataChannels.messages <- fmt.Sprintf("[%2d]: %v: %v: %v", iterations, pixel, z, color)
         }
 
       }

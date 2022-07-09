@@ -111,16 +111,18 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
     Width:          oneOrTheOther(userOpts.Width,   800),
     Height:         oneOrTheOther(userOpts.Height, 600),
 
-    //PlotWidth:      oneOrTheOtherF(userOpts.PlotWidth, 4.1),
-    //PlotHeight:     oneOrTheOtherF(userOpts.PlotHeight, 4.0),
     PlotRadius:     oneOrTheOtherF(userOpts.PlotRadius, 1.0),
     PlotCenterX:    oneOrTheOtherF(userOpts.PlotCenterX, 0.0),
     PlotCenterY:    oneOrTheOtherF(userOpts.PlotCenterY, 0.0),
 
-    Left:           oneOrTheOtherF(userOpts.Left,  -2.1),
-    Right:          oneOrTheOtherF(userOpts.Right, 2.0),
-    Top:            oneOrTheOtherF(userOpts.Top, 2.0),
-    Bottom:         oneOrTheOtherF(userOpts.Bottom, -2.0),
+    //Left:           oneOrTheOtherF(userOpts.Left,  -2.1),
+    //Right:          oneOrTheOtherF(userOpts.Right, 2.0),
+    //Top:            oneOrTheOtherF(userOpts.Top, 2.0),
+    //Bottom:         oneOrTheOtherF(userOpts.Bottom, -2.0),
+    Left:           userOpts.Left,
+    Right:          userOpts.Right,
+    Top:            userOpts.Top,
+    Bottom:         userOpts.Bottom,
   }
 
   if opts.Left == 0.0 && opts.Right == 0.0 && opts.Top == 0.0 && opts.Bottom == 0.0 {

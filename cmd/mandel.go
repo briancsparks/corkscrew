@@ -10,8 +10,8 @@ import (
 )
 
 var width, height int
-var plotWidth, plotHeight, plotRadius, centerx, centery float32
-var left, right, top, bottom float32
+var plotRadius, centerx, centery float32
+var where string
 
 // mandelCmd represents the mandel command
 var mandelCmd = &cobra.Command{
@@ -21,22 +21,26 @@ var mandelCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
     fmt.Println("mandel called")
 
+    if where != "center" {
+      switch where {
+      case "a":
+        centerx = -0.7463
+        centery = 0.1102
+        plotRadius = 0.005
+      case "b":
+        centerx = -0.16
+        centery = 1.0405
+        plotRadius = 0.026
+      }
+    }
+
     _ = corkscrew.ShowMandelbrotSet(corkscrew.MandelOptions{
       Width:        width,
       Height:       height,
 
-      // Either this one (part of set #1)
-      //PlotWidth:    plotWidth,
-      //PlotHeight:   plotHeight,
       PlotRadius:   plotRadius,
       PlotCenterX:  centerx,
       PlotCenterY:  centery,
-
-      // Or this one (part of set #1)
-      Left:         left,
-      Right:        right,
-      Top:          top,
-      Bottom:       bottom,
     })
 	},
 }
@@ -44,20 +48,35 @@ var mandelCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(mandelCmd)
 
-  mandelCmd.Flags().IntVar(&width, "width", 1200, "width")
-  mandelCmd.Flags().IntVar(&height, "height", 800, "height")
+  mandelCmd.PersistentFlags().IntVar(&width, "width", 1200, "width")
+  mandelCmd.PersistentFlags().IntVar(&height, "height", 800, "height")
 
-  //mandelCmd.Flags().Float32Var(&plotWidth, "PlotWidth", 4.1, "The width of the data to plot")
-  //mandelCmd.Flags().Float32Var(&plotHeight, "PlotHeight", 4.0, "The height of the data to plot")
-  mandelCmd.Flags().Float32VarP(&plotRadius, "radius", "r", 0, "Put the radius")
-  mandelCmd.Flags().Float32VarP(&centerx, "centerx", "x", 0, "Put the center")
-  mandelCmd.Flags().Float32VarP(&centery, "centery", "y", 0, "Put the center")
+  mandelCmd.Flags().Float32VarP(&plotRadius, "radius", "r", 2.8, "Put the radius")
+  mandelCmd.Flags().Float32VarP(&centerx, "centerx", "x", 0.0, "Put the center")
+  mandelCmd.Flags().Float32VarP(&centery, "centery", "y", 0.0, "Put the center")
 
+  mandelCmd.Flags().StringVar(&where, "where", "center", "Where to start plot [a-e]")
 
-  mandelCmd.Flags().Float32Var(&left, "left", -2.1, "The left coordinate")
-  mandelCmd.Flags().Float32Var(&right, "right", 1.2, "The right coordinate")
-  mandelCmd.Flags().Float32Var(&top, "top", 1.2, "The top coordinate")
-  mandelCmd.Flags().Float32Var(&bottom, "bottom", -1.2, "The bottom coordinate")
+  //X = -0.7463
+  //Y = 0.1102
+  //R = 0.005
+  //
+  //X = -0.7453
+  //Y = 0.1127
+  //R = 6.5E-4
+  //
+  //X = -0.74529
+  //Y = 0.113075
+  //R = 1.5E-4
+  //
+  //X = -0.745428
+  //Y = 0.113009
+  //R = 3.0E-5
+  //
+  //X = -0.16
+  //Y = 1.0405
+  //R = 0.026
+
 
   // TODO:
   // * Axes, scrollbars, etc.
