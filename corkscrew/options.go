@@ -28,6 +28,20 @@ var configOptions ConfigOptions
 
 // -------------------------------------------------------------------------------------------------------------------
 
+type DebugOptions struct {
+
+}
+var debugOptions DebugOptions
+
+// -------------------------------------------------------------------------------------------------------------------
+
+type RuntimeOptions struct {
+
+}
+var runtimeOptions RuntimeOptions
+
+// -------------------------------------------------------------------------------------------------------------------
+
 func init() {
   configOptions.ShowGridLines   = true
   configOptions.ShowVertAxis    = true

@@ -5,6 +5,7 @@ package corkscrew
 import (
   "fmt"
   colorful "github.com/lucasb-eyer/go-colorful"
+  "strings"
 )
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -92,3 +93,58 @@ func breakout(msg string, quiet bool) {
     fmt.Printf("  ------------ BREAKOUT!! %v !!\n", msg)
   }
 }
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func BuildStringMap(ss []string) map[string]struct{} {
+  m := map[string]struct{}{}
+
+  for _, s := range ss {
+    m[s] = struct{}{}
+  }
+
+  return m
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func BuildStringMapStr(s string) map[string]struct{} {
+  ss := strings.Split(s, ",")
+  return BuildStringMap(ss)
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func intersection(a, b map[string]struct{}) map[string]struct{} {
+  in := map[string]struct{}{}
+  for s, _ := range a {
+    if _, ok := b[s]; ok {
+      in[s] = struct{}{}
+    }
+  }
+  return in
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func union(a, b map[string]struct{}) map[string]struct{} {
+  un := map[string]struct{}{}
+  for s, _ := range a {
+    un[s] = struct{}{}
+  }
+  for s, _ := range b {
+    un[s] = struct{}{}
+  }
+  return un
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func hasIntersection(a, b map[string]struct{}) bool {
+  in := intersection(a, b)
+  return len(in) > 0
+}
+
+
+
+
