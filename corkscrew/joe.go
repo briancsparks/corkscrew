@@ -4,6 +4,7 @@ package corkscrew
 
 import (
   "github.com/go-p5/p5"
+  "image"
   "sync"
 )
 
@@ -15,6 +16,8 @@ type Joe struct {
   MainTile *Tile
   IdTiles   map[int32]*Tile
   message string
+
+  bg          *image.RGBA
 
   dataChannels DataChannels
 
@@ -39,6 +42,7 @@ func NewJoe(f *Field) *Joe {
     messages: make(chan string),
   }
   j.IdTiles = map[int32]*Tile{}
+  j.bg = image.NewRGBA(f.Bounds)
 
   //j.Tiles = append(j.Tiles, NewTile(70, 70, 5.0, 5.0, 0.0, 0.0, f))
 
@@ -75,11 +79,12 @@ func (j *Joe) Run(quit chan struct{}) (chan *Tile, error) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-func (j *Joe) SetIdTile(t *Tile) {
+func (j *Joe) SetIdTile(tile *Tile) {
   j.lock.Lock()
   defer j.lock.Unlock()
 
-  j.IdTiles[t.ID] = t
+  //fmt.Printf("[%3d]: %v\n", tile.ID, tile.Rect)
+  j.IdTiles[tile.ID] = tile
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -102,6 +107,24 @@ func (j *Joe) AppendTile(t *Tile) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
+func (j *Joe) RenderBg() {
+
+  // Get the lock for the operation
+  j.lock.RLock()
+  defer j.lock.RUnlock()
+
+  if len(j.IdTiles) > 0 {
+    for _, tile := range j.IdTiles {
+      //draw.Draw(j.bg, tile.Rect, tile.Img, image.Point{}, draw.Src)
+      p5.DrawImage(tile.Img, float64(tile.Rect.Min.X), float64(tile.Rect.Min.Y))
+    }
+    //p5.DrawImage(j.bg, 0.0, 0.0)
+  }
+
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 func (j *Joe) Render() {
   // Get the lock for the operation
   j.lock.RLock()
@@ -112,9 +135,6 @@ func (j *Joe) Render() {
   }
   if j.MainTile != nil {
     p5.DrawImage(j.MainTile.Img, float64(j.MainTile.Rect.Min.X), float64(j.MainTile.Rect.Min.Y))
-  }
-  for _, tile := range j.IdTiles {
-    p5.DrawImage(tile.Img, float64(tile.Rect.Min.X), float64(tile.Rect.Min.Y))
   }
 
   //p5.TextSize(24)

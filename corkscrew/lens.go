@@ -95,6 +95,14 @@ func ScreenToRealm(pt image.Point, realmRect Rec2, rec image.Rectangle) Vec2 {
 // -------------------------------------------------------------------------------------------------------------------
 
 func ScreenToRealm4Pts(pt image.Point, v2Min, v2Max Vec2, gridMin, gridMax image.Point) Vec2 {
+  realmRect := Rec2{v2Min, v2Max}
+  rec := image.Rectangle{Min: gridMin, Max: gridMax}
+  return ScreenToRealm(pt, realmRect, rec)
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func ScreenToRealm4PtsX(pt image.Point, v2Min, v2Max Vec2, gridMin, gridMax image.Point) Vec2 {
   //pt: image.Point{X: 416 Y: 66},
   //realmRect: Rec2{Min: Vec2{-2.25,1.2}, Max: Vec2{1.35,-1.2}},
   //rec: image.Rect(0, 0, 1200, 800),

@@ -35,7 +35,7 @@ var (
 var mandelOpts      MandelOptions
 var field           *Field
 var joe             *Joe
-var mandel2         *MandelbrotTile
+//var mandel          *MandelbrotTile
 var mandel          *FieldSplitter
 var tilechan         chan *Tile
 var quit             chan struct{}
@@ -57,6 +57,7 @@ func ShowMandelbrotSet(opts_ MandelOptions) error {
 
   fmin, fmax := field.FBounds()
 
+  //mandel  = NewMandelbrotTile(0, fmin, fmax, userRect, joe)
   mandel  = NewFieldSplitter(fmin, fmax, userRect, joe)
 
   tilechan, err := joe.Run(quit)
@@ -87,6 +88,8 @@ func drawP5() {
   //elapsed := t.Sub(startTime).Seconds()
   //sec := t.Second()
 
+  joe.RenderBg()
+  field.RenderBg()
   field.Render()
   joe.Render()
   field.RenderLast()

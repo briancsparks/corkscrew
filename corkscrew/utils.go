@@ -23,6 +23,27 @@ func init() {
 
 // -------------------------------------------------------------------------------------------------------------------
 
+func appendTo(existing, msg string) string {
+  if len(existing) > 0 {
+    return existing + ", " + msg
+  }
+  return msg
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func appendsTo(existing, sep, msg string) string {
+  if len(existing) > 0 {
+    if len(msg) > 0 {
+      return existing + sep + msg
+    }
+    return existing
+  }
+  return msg
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
 func getColor(iterations, maxIterations int) colorful.Color {
   percentage := float32(iterations) / float32(maxIterations)
   index := int(percentage * float32(len(palette)))

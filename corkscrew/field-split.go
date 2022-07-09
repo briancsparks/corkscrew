@@ -1,6 +1,5 @@
 package corkscrew
 
-/* Copyright © 2022 sparksb -- MIT (see LICENSE file) */
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
 import (
@@ -18,6 +17,7 @@ type FieldSplitter struct {
 }
 
 func NewFieldSplitter(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, joe *Joe) *FieldSplitter {
+  Validate(min, max)
   m := &FieldSplitter{
     Min:    min,
     Max:    max,
@@ -27,13 +27,13 @@ func NewFieldSplitter(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, j
 
   if m.Bounds.Dx() > m.Bounds.Dy() {
     midpoint := m.Bounds.Dx() / 2
-    rightMin := image.Point{X: midpoint, Y: m.Bounds.Min.Y}
     leftMax := image.Point{X: midpoint, Y: m.Bounds.Max.Y}
-    rightMinRealm := ScreenToRealm4Pts(rightMin, min, max, bounds.Min, bounds.Max)
+    rightMin := image.Point{X: midpoint, Y: m.Bounds.Min.Y}
     leftMaxRealm := ScreenToRealm4Pts(leftMax,  min, max, bounds.Min, bounds.Max)
+    rightMinRealm := ScreenToRealm4Pts(rightMin, min, max, bounds.Min, bounds.Max)
 
-    m.first = NewMandelbrotTile(1, min, leftMaxRealm, image.Rectangle{Min: bounds.Min, Max: leftMax}, joe)
-    m.second = NewMandelbrotTile(2, rightMinRealm, max, image.Rectangle{Min: rightMin, Max: bounds.Max}, joe)
+    m.first = NewMandelbrotTile(0, min, leftMaxRealm, image.Rectangle{Min: bounds.Min, Max: leftMax}, joe)
+    m.second = NewMandelbrotTile(1, rightMinRealm, max, image.Rectangle{Min: rightMin, Max: bounds.Max}, joe)
 
   } else {
     midpoint := m.Bounds.Dy() / 2
@@ -42,8 +42,8 @@ func NewFieldSplitter(min, max Vec2/*, x, y float64*/, bounds image.Rectangle, j
     topMaxRealm := ScreenToRealm4Pts(topMax, min, max, bounds.Min, bounds.Max)
     bottomMinRealm := ScreenToRealm4Pts(bottomMin, min, max, bounds.Min, bounds.Max)
 
-    m.first = NewMandelbrotTile(1, min, topMaxRealm, image.Rectangle{Min: bounds.Min, Max: topMax}, joe)
-    m.second = NewMandelbrotTile(2, bottomMinRealm, max, image.Rectangle{Min: bottomMin, Max: bounds.Max}, joe)
+    m.first = NewMandelbrotTile(0, min, topMaxRealm, image.Rectangle{Min: bounds.Min, Max: topMax}, joe)
+    m.second = NewMandelbrotTile(1, bottomMinRealm, max, image.Rectangle{Min: bottomMin, Max: bounds.Max}, joe)
   }
 
   return m
