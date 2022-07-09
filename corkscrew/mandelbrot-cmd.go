@@ -7,7 +7,6 @@ import (
   "github.com/go-p5/p5"
   "image"
   "image/color"
-  "time"
 )
 
 type MandelOptions struct {
@@ -15,9 +14,10 @@ type MandelOptions struct {
   Height      int
 
   // Either this one (part of set #1)
-  PlotHeight  float32
-  PlotWidth   float32
-  PlotCenterX float32                  // defaults to origin if PlotWidth/PlotHeight are used
+  //PlotHeight  float32
+  //PlotWidth   float32
+  PlotRadius  float32
+  PlotCenterX float32
   PlotCenterY float32
 
   // Or this one (part of set #1)
@@ -29,7 +29,7 @@ type MandelOptions struct {
 
 var (
   count     = 0
-  startTime = time.Now()
+  //startTime = time.Now()
 )
 
 var mandelOpts      MandelOptions
@@ -111,8 +111,9 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
     Width:          oneOrTheOther(userOpts.Width,   800),
     Height:         oneOrTheOther(userOpts.Height, 600),
 
-    PlotWidth:      oneOrTheOtherF(userOpts.PlotWidth, 4.1),
-    PlotHeight:     oneOrTheOtherF(userOpts.PlotHeight, 4.0),
+    //PlotWidth:      oneOrTheOtherF(userOpts.PlotWidth, 4.1),
+    //PlotHeight:     oneOrTheOtherF(userOpts.PlotHeight, 4.0),
+    PlotRadius:     oneOrTheOtherF(userOpts.PlotRadius, 1.0),
     PlotCenterX:    oneOrTheOtherF(userOpts.PlotCenterX, 0.0),
     PlotCenterY:    oneOrTheOtherF(userOpts.PlotCenterY, 0.0),
 
@@ -123,7 +124,7 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
   }
 
   if opts.Left == 0.0 && opts.Right == 0.0 && opts.Top == 0.0 && opts.Bottom == 0.0 {
-    halfWidth, halfHeight := opts.PlotWidth / 2.0, opts.PlotHeight / 2.0
+    halfWidth, halfHeight := opts.PlotRadius / 2.0, opts.PlotRadius / 2.0
 
     opts.Left     = opts.PlotCenterX - halfWidth
     opts.Right    = opts.PlotCenterX + halfWidth
@@ -143,8 +144,8 @@ func GetMandelOpts(userOpts MandelOptions) MandelOptions {
 func (opts *MandelOptions) GetLeft() float32 {
  if opts.Left != 0 {
    return opts.Left
- } else if opts.PlotCenterX != 0 && opts.PlotWidth != 0 {
-   return opts.PlotCenterX - opts.PlotWidth
+ } else if opts.PlotCenterX != 0 && opts.PlotRadius != 0 {
+   return opts.PlotCenterX - opts.PlotRadius
  }
 
  return -2.1

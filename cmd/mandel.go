@@ -10,7 +10,7 @@ import (
 )
 
 var width, height int
-var plotWidth, plotHeight, centerx, centery float32
+var plotWidth, plotHeight, plotRadius, centerx, centery float32
 var left, right, top, bottom float32
 
 // mandelCmd represents the mandel command
@@ -26,8 +26,9 @@ var mandelCmd = &cobra.Command{
       Height:       height,
 
       // Either this one (part of set #1)
-      PlotWidth:    plotWidth,
-      PlotHeight:   plotHeight,
+      //PlotWidth:    plotWidth,
+      //PlotHeight:   plotHeight,
+      PlotRadius:   plotRadius,
       PlotCenterX:  centerx,
       PlotCenterY:  centery,
 
@@ -46,19 +47,17 @@ func init() {
   mandelCmd.Flags().IntVar(&width, "width", 1200, "width")
   mandelCmd.Flags().IntVar(&height, "height", 800, "height")
 
-  mandelCmd.Flags().Float32Var(&plotWidth, "PlotWidth", 4.1, "The width of the data to plot")
-  mandelCmd.Flags().Float32Var(&plotHeight, "PlotHeight", 4.0, "The height of the data to plot")
-  mandelCmd.Flags().Float32Var(&centerx, "centerx", 0, "Put the center")
-  mandelCmd.Flags().Float32Var(&centery, "centery", 0, "Put the center")
+  //mandelCmd.Flags().Float32Var(&plotWidth, "PlotWidth", 4.1, "The width of the data to plot")
+  //mandelCmd.Flags().Float32Var(&plotHeight, "PlotHeight", 4.0, "The height of the data to plot")
+  mandelCmd.Flags().Float32VarP(&plotRadius, "radius", "r", 0, "Put the radius")
+  mandelCmd.Flags().Float32VarP(&centerx, "centerx", "x", 0, "Put the center")
+  mandelCmd.Flags().Float32VarP(&centery, "centery", "y", 0, "Put the center")
+
 
   mandelCmd.Flags().Float32Var(&left, "left", -2.1, "The left coordinate")
   mandelCmd.Flags().Float32Var(&right, "right", 1.2, "The right coordinate")
   mandelCmd.Flags().Float32Var(&top, "top", 1.2, "The top coordinate")
   mandelCmd.Flags().Float32Var(&bottom, "bottom", -1.2, "The bottom coordinate")
-  //mandelCmd.Flags().Float32Var(&left, "left", -600.0, "The left coordinate")
-  //mandelCmd.Flags().Float32Var(&right, "right", 600, "The right coordinate")
-  //mandelCmd.Flags().Float32Var(&top, "top", 200.0, "The top coordinate")
-  //mandelCmd.Flags().Float32Var(&bottom, "bottom", -200.0, "The bottom coordinate")
 
   // TODO:
   // * Axes, scrollbars, etc.
