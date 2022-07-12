@@ -8,7 +8,7 @@ Status:
 * Just put `both` library in, and hooked up the `mandelboth` command
   * MUCH faster (0.25 sec vs. 3.5sec)
   * Works much better for the Work/Display duality
-* Lost axis
+* ~~Lost axis~~
 * Lost work splitting
 
 Features:
