@@ -14,7 +14,8 @@ func (s Strategy) String() string {
 // -----------------------------------------------------------------------------------------------------------------
 
 type Both struct {
-  Main  BothRect        /* The rect for the whole display */
+  Id      int
+  Main    BothRect        /* The rect for the whole display */
 }
 
 // -----------------------------------------------------------------------------------------------------------------
@@ -107,7 +108,30 @@ func (di *DisplayIterator) Next() *BothPt {
 
 // ------------------------------------------------------------------------------------------------------------
 
-func MakeGrid(dleft, dtop, dright, dbottom int, left, top, right, bottom float64, strategy Strategy) *Both {
+//func (b *Both) Split() (*Both, *Both) {
+//  myWorkRect := b.Main.Work
+//  if b.Main.Work.Dx() > b.Main.Work.Dy() {
+//    dleft, dright := b.Main.Display.SplitOnX()
+//    dright.Min.X = b.Main.Display.MidpointX()
+//    dleft.Max.X  = dright.Min.X - 1
+//
+//    left := WkRect(myWorkRect.Min.X, myWorkRect.Min.Y, b.WorkPtFor(dleft.Max).X, myWorkRect.Max.Y)
+//    right := WkRect(b.WorkPtFor(dright.Min).X, myWorkRect.Min.Y, myWorkRect.Max.X, myWorkRect.Max.Y)
+//
+//  } else {
+//    dtop, dbottom := b.Main.Display.SplitOnY()
+//    dbottom.Min.Y   = b.Main.Display.MidpointY()
+//    dtop.Max.Y      = dbottom.Min.Y
+//
+//    top := WkRect(myWorkRect.Min.X, myWorkRect.Min.Y, myWorkRect.Max.X, b.WorkPtFor(dtop.Max).Y)
+//    bottom := WkRect(myWorkRect.Min.X, b.WorkPtFor(dbottom.Min).Y, myWorkRect.Max.X, myWorkRect.Max.Y)
+//  }
+//
+//}
+
+// ------------------------------------------------------------------------------------------------------------
+
+func MakeGrid(id int, dleft, dtop, dright, dbottom int, left, top, right, bottom float64, strategy Strategy) *Both {
 
   fdleft, fdtop, fdright, fdbottom := float64(dleft), float64(dtop), float64(dright), float64(dbottom)
 
@@ -151,7 +175,7 @@ func MakeGrid(dleft, dtop, dright, dbottom int, left, top, right, bottom float64
     Display: Rect(dleft, dtop, dright, dbottom),
     Work:    WkRect(left, top, right, bottom),
   }
-  return &Both{Main: mainRect}
+  return &Both{Id: id, Main: mainRect}
 }
 
 // -----------------------------------------------------------------------------------------------------------------

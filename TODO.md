@@ -10,6 +10,7 @@ Status:
   * Works much better for the Work/Display duality
 * ~~Lost axis~~
 * Lost work splitting
+  * Look at both.split()
 
 Features:
 

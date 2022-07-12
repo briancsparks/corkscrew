@@ -76,7 +76,7 @@ func MandelBothMain(paramsIn *MandelConfig) error {
 
   params.displayRect = image.Rect(0, 0, params.displayWidth, params.displayHeight)
   params.mandelImg = image.NewRGBA(params.displayRect)
-  data := both.MakeGrid(0, 0, params.displayWidth, params.displayHeight, params.left, params.top, params.right, params.bottom, both.SeeAll)
+  data := both.MakeGrid(0,0, 0, params.displayWidth, params.displayHeight, params.left, params.top, params.right, params.bottom, both.SeeAll)
   cmd.grid = data
 
   var tilechan chan *MandelDataMessage = make(chan *MandelDataMessage)
