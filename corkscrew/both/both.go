@@ -83,21 +83,23 @@ func (di *DisplayIterator) Curr() *BothPt {
 // -----------------------------------------------------------------------------------------------------------------
 
 func (di *DisplayIterator) Next() *BothPt {
-  di.pt.Display.X += 1
-  if di.pt.Display.X >= di.rects.Display.Max.X {
-    di.pt.Display.Y += 1
-    if di.pt.Display.Y >= di.rects.Display.Max.Y {
+  x, y := di.pt.Display.X, di.pt.Display.Y
+
+  x += 1
+  if x >= di.rects.Display.Max.X {
+    y += 1
+    if y >= di.rects.Display.Max.Y {
       // Done
-      di.pt.Display.X -= 1
-      di.pt.Display.Y -= 1
       return nil
     }
     di.pt.Display.X = di.rects.Display.Min.X
+    di.pt.Display.Y = y
     di.pt.Work.X    = di.rects.Work.Min.X
     di.pt.Work.Y   -= di.dy
 
   } else {
-    di.pt.Work.X  += di.dx
+    di.pt.Display.X    = x
+    di.pt.Work.X      += di.dx
   }
 
   return &di.pt
@@ -152,6 +154,7 @@ func MakeGrid(dleft, dtop, dright, dbottom int, left, top, right, bottom float64
   return &Both{Main: mainRect}
 }
 
+// -----------------------------------------------------------------------------------------------------------------
 
 func NormalizeDisplayRect(left, top, right, bottom int) (int,int,int,int)  {
   left, right = inOrderInt(left, right)
@@ -160,6 +163,8 @@ func NormalizeDisplayRect(left, top, right, bottom int) (int,int,int,int)  {
   return left, top, right, bottom
 }
 
+// -----------------------------------------------------------------------------------------------------------------
+
 func NormalizeWorkRect(left, top, right, bottom float64) (float64,float64,float64,float64)  {
   left, right = inOrder(left, right)
   top, bottom = inReverseOrder(top, bottom)
@@ -167,12 +172,16 @@ func NormalizeWorkRect(left, top, right, bottom float64) (float64,float64,float6
   return left, top, right, bottom
 }
 
+// -----------------------------------------------------------------------------------------------------------------
+
 func inOrderInt(a,b int) (int,int) {
   if b < a {
     return b,a
   }
   return a,b
 }
+
+// -----------------------------------------------------------------------------------------------------------------
 
 func inReverseOrderInt(a,b int) (int,int) {
   if b < a {
@@ -187,6 +196,8 @@ func inOrder(a,b float64) (float64,float64) {
   }
   return a,b
 }
+
+// -----------------------------------------------------------------------------------------------------------------
 
 func inReverseOrder(a,b float64) (float64,float64) {
   if b < a {
