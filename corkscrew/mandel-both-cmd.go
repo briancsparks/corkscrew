@@ -11,6 +11,8 @@ import (
   "sync"
 )
 
+// -------------------------------------------------------------------------------------------------------------------
+
 var (
   cmd    *MandelBothCmd
 )
@@ -34,7 +36,6 @@ type MandelConfig struct {
 
   displayRect     image.Rectangle
 
-  //lock            sync.RWMutex
   mandelImg      *image.RGBA
   mandelRect      image.Rectangle
 }
@@ -57,27 +58,12 @@ func NewMandelConfig(displayWidth int, displayHeight int, centerx, centery, radi
 
 // -------------------------------------------------------------------------------------------------------------------
 
-func NewMandelConfigRect(displayWidth int, displayHeight int, left float64, top float64, right float64, bottom float64) *MandelConfig {
- m := &MandelConfig{
-   displayWidth: displayWidth,
-   displayHeight: displayHeight,
-   left: left,
-   top: top,
-   right: right,
-   bottom: bottom,
- }
-
- return m
-}
-
-// -------------------------------------------------------------------------------------------------------------------
-
 type MandelBothCmd struct {
   config       *MandelConfig
-  lock         sync.RWMutex
-  mandelImg   *image.RGBA
-  mandelRect   image.Rectangle
-  grid        *both.Both
+  grid         *both.Both
+  lock          sync.RWMutex
+  mandelImg    *image.RGBA
+  mandelRect    image.Rectangle
 }
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -127,6 +113,8 @@ func (c *MandelBothCmd) updateMsg(msg *MandelDataMessage) {
   c.mandelRect = msg.Rect
 }
 
+// -------------------------------------------------------------------------------------------------------------------
+
 func mandelSetupP5() {
   p5.Canvas(cmd.config.displayWidth, cmd.config.displayHeight)
   p5.Background(color.Gray{Y: 220})
@@ -174,6 +162,8 @@ func figureOutConfig(paramsIn *MandelConfig) *MandelConfig {
 
   return params
 }
+
+// -------------------------------------------------------------------------------------------------------------------
 
 func (m *MandelConfig) String() string {
   return fmt.Sprintf("(%v, (%v, %v)) -> [(x: %v, y: %v, r: %v (dx: %v, dy: %v)); (%v, %v, %v, %v)]",
