@@ -77,6 +77,7 @@ type MandelBothCmd struct {
   lock         sync.RWMutex
   mandelImg   *image.RGBA
   mandelRect   image.Rectangle
+  grid        *both.Both
 }
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -90,6 +91,7 @@ func MandelBothMain(paramsIn *MandelConfig) error {
   params.displayRect = image.Rect(0, 0, params.displayWidth, params.displayHeight)
   params.mandelImg = image.NewRGBA(params.displayRect)
   data := both.MakeGrid(0, 0, params.displayWidth, params.displayHeight, params.left, params.top, params.right, params.bottom, both.SeeAll)
+  cmd.grid = data
 
   var tilechan chan *MandelDataMessage = make(chan *MandelDataMessage)
   _= RunMandel(quit, tilechan, params, data)
@@ -134,15 +136,6 @@ func mandelSetupP5() {
 
 func mandelDrawP5() {
   cmd.DrawP5()
-}
-
-// -------------------------------------------------------------------------------------------------------------------
-
-func (c *MandelBothCmd) DrawP5() {
-  c.lock.Lock()
-  defer c.lock.Unlock()
-
-  p5.DrawImage(c.mandelImg, 0, 0)
 }
 
 // -------------------------------------------------------------------------------------------------------------------
