@@ -3,9 +3,19 @@
 
 ## Mandelbrot
 
+Status:
+
+* Just put `both` library in, and hooked up the `mandelboth` command
+  * MUCH faster (0.25 sec vs. 3.5sec)
+  * Works much better for the Work/Display duality
+* Lost axis
+* Lost work splitting
+
 Features:
 
-* Concurrent-ize the compute loop
+* Look into using https://github.com/kvartborg/vector
+  * For vectors
+* ~~Concurrent-ize the compute loop~~
 * Zoom
 
 Clean up:

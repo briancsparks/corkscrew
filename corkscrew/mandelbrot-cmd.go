@@ -165,6 +165,16 @@ func oneOrTheOther(one, other int) int {
 
 // -------------------------------------------------------------------------------------------------------------------
 
+func oneOrTheOtherFloat64(one, other float64) float64 {
+  if one != 0 {
+    return one
+  }
+
+  return other
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
 func oneOrTheOtherF(one, other float32) float32 {
   if one != 0 {
     return one
