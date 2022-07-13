@@ -64,6 +64,8 @@ type MandelBothCmd struct {
   lock          sync.RWMutex
   mandelImg    *image.RGBA
   mandelRect    image.Rectangle
+
+  previousDrawWorkBounds *both.WorkRect
 }
 
 // -------------------------------------------------------------------------------------------------------------------

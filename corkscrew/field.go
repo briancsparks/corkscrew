@@ -20,7 +20,6 @@ type Field struct {
   Bounds image.Rectangle                                            // 0, 0, 800, 600
 
   // Display properties
-  //ShowXAxis, ShowYAxis, ShowGridLines bool
   IsLogX, IsLogY                      bool
   ShowMathy                           bool
 }

@@ -2,6 +2,18 @@ package corkscrew
 
 /* Copyright © 2022 Brian C Sparks <briancsparks@gmail.com> -- MIT (see LICENSE file) */
 
+// -------------------------------------------------------------------------------------------------------------------
+
+func init() {
+  configOptions.ShowGridLines   = true
+  configOptions.ShowAxis        = true
+  configOptions.ShowVertAxis    = true
+  configOptions.ShowHorizAxis   = true
+  configOptions.GridStyle       = byTens
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
 type GridStyle int
 const (
   byTens      GridStyle = iota
@@ -15,6 +27,7 @@ func (gs GridStyle) String() string {
 
 type ConfigOptions struct {
   ShowGridLines   bool
+  ShowAxis        bool
   ShowVertAxis    bool
   ShowHorizAxis   bool
   GridStyle       GridStyle
@@ -45,13 +58,4 @@ type DebugOptions struct {
 
 }
 var debugOptions DebugOptions
-
-// -------------------------------------------------------------------------------------------------------------------
-
-func init() {
-  configOptions.ShowGridLines   = true
-  configOptions.ShowVertAxis    = true
-  configOptions.ShowHorizAxis   = true
-  configOptions.GridStyle       = byTens
-}
 
