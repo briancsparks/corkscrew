@@ -35,13 +35,13 @@ func (r *DisplayRect) Dy() int {
 // -----------------------------------------------------------------------------------------------------------
 
 func (r *DisplayRect) MidpointX() int {
-  return r.Max.X - r.Min.X
+  return r.Min.X + (r.Max.X - r.Min.X) / 2
 }
 
 // -----------------------------------------------------------------------------------------------------------
 
 func (r *DisplayRect) MidpointY() int {
-  return r.Max.Y - r.Min.Y
+  return r.Min.Y + (r.Max.Y - r.Min.Y) / 2
 }
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -51,7 +51,8 @@ func (r *DisplayRect) SplitOnX() (DisplayRect,DisplayRect) {
   right   := *r
 
   right.Min.X   = r.MidpointX()
-  left.Max.X    = right.Min.X - 1
+  //left.Max.X    = right.Min.X - 1
+  left.Max.X    = right.Min.X
 
   return left, right
 }
@@ -63,7 +64,8 @@ func (r *DisplayRect) SplitOnY() (DisplayRect,DisplayRect) {
   bottom    := *r
 
   bottom.Min.Y  = r.MidpointY()
-  top.Max.Y     = bottom.Min.Y - 1
+  //top.Max.Y     = bottom.Min.Y - 1
+  top.Max.Y     = bottom.Min.Y
 
   return top, bottom
 }

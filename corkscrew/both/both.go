@@ -6,10 +6,17 @@ type Strategy int
 const (
   SeeAll  Strategy = iota
   ZoomedInCropped
+  DoNotChange
 )
 func (s Strategy) String() string {
-  return [...]string{"SeeAll", "ZoomedInCropped"}[s]
+  return [...]string{"SeeAll", "ZoomedInCropped", "DoNotChange"}[s]
 }
+
+// -----------------------------------------------------------------------------------------------------------------
+
+var (
+  unique int = 0
+)
 
 // -----------------------------------------------------------------------------------------------------------------
 
@@ -108,30 +115,38 @@ func (di *DisplayIterator) Next() *BothPt {
 
 // ------------------------------------------------------------------------------------------------------------
 
-//func (b *Both) Split() (*Both, *Both) {
-//  myWorkRect := b.Main.Work
-//  if b.Main.Work.Dx() > b.Main.Work.Dy() {
-//    dleft, dright := b.Main.Display.SplitOnX()
-//    dright.Min.X = b.Main.Display.MidpointX()
-//    dleft.Max.X  = dright.Min.X - 1
-//
-//    left := WkRect(myWorkRect.Min.X, myWorkRect.Min.Y, b.WorkPtFor(dleft.Max).X, myWorkRect.Max.Y)
-//    right := WkRect(b.WorkPtFor(dright.Min).X, myWorkRect.Min.Y, myWorkRect.Max.X, myWorkRect.Max.Y)
-//
-//  } else {
-//    dtop, dbottom := b.Main.Display.SplitOnY()
-//    dbottom.Min.Y   = b.Main.Display.MidpointY()
-//    dtop.Max.Y      = dbottom.Min.Y
-//
-//    top := WkRect(myWorkRect.Min.X, myWorkRect.Min.Y, myWorkRect.Max.X, b.WorkPtFor(dtop.Max).Y)
-//    bottom := WkRect(myWorkRect.Min.X, b.WorkPtFor(dbottom.Min).Y, myWorkRect.Max.X, myWorkRect.Max.Y)
-//  }
-//
-//}
+func (b *Both) Split() (*Both, *Both) {
+  myWorkRect := b.Main.Work
+  if b.Main.Work.Dx() > b.Main.Work.Dy() {
+    dleft, dright := b.Main.Display.SplitOnX()
+    //dright.Min.X = b.Main.Display.MidpointX()
+    //dleft.Max.X = dright.Min.X - 1
+
+    left := WkRect(myWorkRect.Min.X, myWorkRect.Min.Y, b.WorkPtFor(dleft.Max).X, myWorkRect.Max.Y)
+    right := WkRect(b.WorkPtFor(dright.Min).X, myWorkRect.Min.Y, myWorkRect.Max.X, myWorkRect.Max.Y)
+    return MakeGrid(dleft, left, DoNotChange), MakeGrid(dright, right, DoNotChange)
+
+  } else {
+    dtop, dbottom := b.Main.Display.SplitOnY()
+    //dbottom.Min.Y = b.Main.Display.MidpointY()
+    //dtop.Max.Y = dbottom.Min.Y
+
+    top := WkRect(myWorkRect.Min.X, myWorkRect.Min.Y, myWorkRect.Max.X, b.WorkPtFor(dtop.Max).Y)
+    bottom := WkRect(myWorkRect.Min.X, b.WorkPtFor(dbottom.Min).Y, myWorkRect.Max.X, myWorkRect.Max.Y)
+    return MakeGrid(dtop, top, DoNotChange), MakeGrid(dbottom, bottom, DoNotChange)
+  }
+
+}
 
 // ------------------------------------------------------------------------------------------------------------
 
-func MakeGrid(id int, dleft, dtop, dright, dbottom int, left, top, right, bottom float64, strategy Strategy) *Both {
+func MakeGrid(/*id int,*/ drect DisplayRect, rect WorkRect, strategy Strategy) *Both {
+  return MakeGrid8(/*id,*/ drect.Min.X, drect.Min.Y, drect.Max.X, drect.Max.Y, rect.Min.X, rect.Min.Y, rect.Max.X, rect.Max.Y, strategy)
+}
+
+// ------------------------------------------------------------------------------------------------------------
+
+func MakeGrid8(/*id int,*/ dleft, dtop, dright, dbottom int, left, top, right, bottom float64, strategy Strategy) *Both {
 
   fdleft, fdtop, fdright, fdbottom := float64(dleft), float64(dtop), float64(dright), float64(dbottom)
 
@@ -175,7 +190,9 @@ func MakeGrid(id int, dleft, dtop, dright, dbottom int, left, top, right, bottom
     Display: Rect(dleft, dtop, dright, dbottom),
     Work:    WkRect(left, top, right, bottom),
   }
-  return &Both{Id: id, Main: mainRect}
+
+  unique += 1
+  return &Both{Id: unique, Main: mainRect}
 }
 
 // -----------------------------------------------------------------------------------------------------------------

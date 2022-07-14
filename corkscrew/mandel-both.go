@@ -30,110 +30,125 @@ func RunMandel(quit chan struct{}, tilechan chan *MandelDataMessage, params *Man
   c := colorful.WarmColor()
   imageUniform := &image.Uniform{C: color.RGBA{R: uint8(c.R * 255), G: uint8(c.G * 255), B: uint8(c.B * 255), A: 255}}
 
-  wg := sync.WaitGroup{}
-  wg.Add(1)
-  go func() {
-    wg.Done()
-    start := time.Now()
+  grid1, grid2 := bothGrid.Split()
+  gridA, gridB := grid1.Split()
+  cmd.grids = append(cmd.grids, gridA, gridB)
+  gridA, gridB = grid2.Split()
+  cmd.grids = append(cmd.grids, gridA, gridB)
+  //grids := []*both.Both{grid1, grid2}
 
-    computeCount := 0
-    iterations, maxIterations := 0, 100
+  for _, grid := range cmd.grids {
 
-    // Stats to collect
-    totalIterations := 0
-    totalPixels := 0
-    totalFails := 0
-    totalFast := 0
-    iterCounts := make([]int, maxIterations + 2)
+    wg := sync.WaitGroup{}
+    wg.Add(1)
+    go func(grid *both.Both) {
+      wg.Done()
+      start := time.Now()
 
-    var pixel both.DisplayPt
+      r := grid.Main.Display
+      displayRect := image.Rect(r.Min.X, r.Min.Y, r.Max.X, r.Max.Y)
 
-    pixImage := image.NewRGBA(params.displayRect)
-    draw.Draw(pixImage, params.displayRect.Bounds(), imageUniform, image.Point{}, draw.Src)
-    tilechan <- &MandelDataMessage{1, pixImage, params.displayRect}
+      fmt.Printf("grid: %v\n", *grid)
+      computeCount := 0
+      iterations, maxIterations := 0, 100
 
-    var bothPt *both.BothPt
-    itPt := bothGrid.GetDisplayIterator()
-    bothPt = itPt.Curr()
-    pixel = bothPt.Display
-    totalPixels += 1
+      // Stats to collect
+      totalIterations := 0
+      totalPixels := 0
+      totalFails := 0
+      totalFast := 0
+      iterCounts := make([]int, maxIterations + 2)
 
-    z := complex(0.0, 0.0)
-    c := complex(bothPt.Work.X, bothPt.Work.Y)
+      var pixel both.DisplayPt
 
-    doneWithCurrent := false
-    allDone := false
-    for {
-      select {
-      case <-quit:
-        break
+      pixImage := image.NewRGBA(displayRect)
+      draw.Draw(pixImage, displayRect.Bounds(), imageUniform, image.Point{}, draw.Src)
+      tilechan <- &MandelDataMessage{grid.Id, pixImage, displayRect}
 
-      default:
-        break
-      }
+      var bothPt *both.BothPt
+      itPt := grid.GetDisplayIterator()
+      bothPt = itPt.Curr()
+      pixel = bothPt.Display
+      totalPixels += 1
 
-      if bothPt == nil {
-        bothPt = itPt.Next()
+      z := complex(0.0, 0.0)
+      c := complex(bothPt.Work.X, bothPt.Work.Y)
+
+      doneWithCurrent := false
+      allDone := false
+      for {
+        select {
+        case <-quit:
+          break
+
+        default:
+          break
+        }
+
         if bothPt == nil {
-          // Done
-          allDone = true
-          break
-        }
-        z = complex(0.0, 0.0)
-        c = complex(bothPt.Work.X, bothPt.Work.Y)
+          bothPt = itPt.Next()
+          if bothPt == nil {
+            // Done
+            allDone = true
+            break
+          }
+          z = complex(0.0, 0.0)
+          c = complex(bothPt.Work.X, bothPt.Work.Y)
 
-        // BBB
-        if computeCount >= 540000 + 580 {
+          // BBB
+          if computeCount >= 540000 + 580 {
+            computeCount += 1
+          }
           computeCount += 1
-        }
-        computeCount += 1
-        totalPixels += 1
-        pixel = bothPt.Display
-        doneWithCurrent = false
-      }
-
-      for iterations = 1; iterations < maxIterations; iterations++ {
-        z = z*z + c
-
-        // How far away are we?
-        re, im := real(z), imag(z)
-        distSq := re*re + im*im
-        if distSq > 4.0 {
-          doneWithCurrent = true
-          totalFast += 1
-          break
-        }
-        if math.IsNaN(re) || math.IsNaN(im) || math.IsNaN(distSq) {
-          break
-        }
-      }
-      totalIterations += iterations
-      if iterations >= maxIterations {
-        totalFails += 1
-      }
-
-      if doneWithCurrent || iterations >= maxIterations {
-        iterCounts[iterations] += 1
-        if pixel.X == bothGrid.Main.Display.Min.X {
-          tilechan <- &MandelDataMessage{1, pixImage, params.displayRect}
+          totalPixels += 1
+          pixel = bothPt.Display
+          doneWithCurrent = false
         }
 
-        kolor := getColor(iterations, maxIterations)
-        onePixRect := image.Rect(pixel.X, pixel.Y, pixel.X + 1, pixel.Y + 1)
-        draw.Draw(pixImage, onePixRect, &image.Uniform{C: kolor}, image.Point{}, draw.Src)
+        for iterations = 1; iterations < maxIterations; iterations++ {
+          z = z*z + c
 
-        bothPt = nil
+          // How far away are we?
+          re, im := real(z), imag(z)
+          distSq := re*re + im*im
+          if distSq > 4.0 {
+            doneWithCurrent = true
+            totalFast += 1
+            break
+          }
+          if math.IsNaN(re) || math.IsNaN(im) || math.IsNaN(distSq) {
+            break
+          }
+        }
+        totalIterations += iterations
+        if iterations >= maxIterations {
+          totalFails += 1
+        }
+
+        if doneWithCurrent || iterations >= maxIterations {
+          iterCounts[iterations] += 1
+          if pixel.X == grid.Main.Display.Min.X {
+            tilechan <- &MandelDataMessage{grid.Id, pixImage, displayRect}
+          }
+
+          kolor := getColor(iterations, maxIterations)
+          onePixRect := image.Rect(pixel.X, pixel.Y, pixel.X + 1, pixel.Y + 1)
+          draw.Draw(pixImage, onePixRect, &image.Uniform{C: kolor}, image.Point{}, draw.Src)
+
+          bothPt = nil
+        }
       }
-    }
 
-    if allDone {
-      elapsed := time.Since(start)
-      fmt.Printf("Time: %f sec -- Loops: [%v], Pixels: %v, fast: %v, fail: %v\n", elapsed.Seconds(), totalIterations, totalPixels, totalFast, totalFails)
-      fmt.Printf("Iter counts: %v\n", iterCounts)
-      tilechan <- &MandelDataMessage{1, pixImage, params.displayRect}
-    }
-  }()
-  wg.Wait()
+      if allDone {
+        elapsed := time.Since(start)
+        fmt.Printf("Time: %f sec -- Loops: [%v], Pixels: %v, fast: %v, fail: %v\n", elapsed.Seconds(), totalIterations, totalPixels, totalFast, totalFails)
+        fmt.Printf("Iter counts: %v\n", iterCounts)
+        tilechan <- &MandelDataMessage{1, pixImage, displayRect}
+      }
+    }(grid)
+    wg.Wait()
+  }
+
 
   return nil
 }

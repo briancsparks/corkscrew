@@ -61,9 +61,13 @@ func NewMandelConfig(displayWidth int, displayHeight int, centerx, centery, radi
 type MandelBothCmd struct {
   config       *MandelConfig
   grid         *both.Both
+  grids        []*both.Both
   lock          sync.RWMutex
   mandelImg    *image.RGBA
   mandelRect    image.Rectangle
+
+  mandelImgs    map[int]*image.RGBA
+  mandelRects   map[int]image.Rectangle
 
   previousDrawWorkBounds *both.WorkRect
 }
@@ -78,7 +82,10 @@ func MandelBothMain(paramsIn *MandelConfig) error {
 
   params.displayRect = image.Rect(0, 0, params.displayWidth, params.displayHeight)
   params.mandelImg = image.NewRGBA(params.displayRect)
-  data := both.MakeGrid(0,0, 0, params.displayWidth, params.displayHeight, params.left, params.top, params.right, params.bottom, both.SeeAll)
+  cmd.mandelImgs =   map[int]*image.RGBA{}
+  cmd.mandelRects =  map[int]image.Rectangle{}
+
+  data := both.MakeGrid8(/*0,*/0, 0, params.displayWidth, params.displayHeight, params.left, params.top, params.right, params.bottom, both.SeeAll)
   cmd.grid = data
 
   var tilechan chan *MandelDataMessage = make(chan *MandelDataMessage)
@@ -113,6 +120,9 @@ func (c *MandelBothCmd) updateMsg(msg *MandelDataMessage) {
 
   c.mandelImg = msg.Img
   c.mandelRect = msg.Rect
+
+  c.mandelImgs[msg.Id] = msg.Img
+  c.mandelRects[msg.Id] = msg.Rect
 }
 
 // -------------------------------------------------------------------------------------------------------------------

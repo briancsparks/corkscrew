@@ -13,7 +13,11 @@ func (c *MandelBothCmd) DrawP5() {
     c.lock.Lock()
     defer c.lock.Unlock()
 
-    p5.DrawImage(c.mandelImg, 0, 0)
+    //p5.DrawImage(c.mandelImg, 0, 0)
+    for i, img := range c.mandelImgs {
+      rect := c.mandelRects[i]
+      p5.DrawImage(img, float64(rect.Min.X), float64(rect.Min.Y))
+    }
   }()
 
   if configOptions.ShowAxis {
