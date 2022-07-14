@@ -48,24 +48,26 @@ func (c *MandelBothCmd) showAxes() {
 func (c *MandelBothCmd) showGridLines() {
   //boundsAreSame := true
   //if c.previousDrawWorkBounds == nil || *c.previousDrawWorkBounds != c.grid.Main.Work {
-  // boundsAreSame = false
-  // c.previousDrawWorkBounds = &c.grid.Main.Work
+  //  boundsAreSame = false
+  //  c.previousDrawWorkBounds = &c.grid.Main.Work
   //}
+
+  // FIXME: the labels need to have the same accuracy. Run to see: go run main/corkscrew.go mandelboth -x -0.16 -y 1.0405 -r 0.1
 
   p5.StrokeWidth(1)
   plotableX := FindBestLineForLabel(c.grid.Main.Work.Min.X, c.grid.Main.Work.Max.X)
   plotableY := FindBestLineForLabel(c.grid.Main.Work.Max.Y, c.grid.Main.Work.Min.Y)
   //if !boundsAreSame {
-  // fmt.Printf("bounds: %v\n", c.grid.Main.Work)
-  // fmt.Printf("plotable x: %v (%v, %v)\n", plotableX, c.grid.Main.Work.Min.X, c.grid.Main.Work.Max.X)
-  // fmt.Printf("plotable y: %v (%v, %v)\n", plotableY, c.grid.Main.Work.Max.Y, c.grid.Main.Work.Min.Y)
+  //  fmt.Printf("bounds: %v\n", c.grid.Main.Work)
+  //  fmt.Printf("plotable x: %v (%v, %v)\n", plotableX, c.grid.Main.Work.Min.X, c.grid.Main.Work.Max.X)
+  //  fmt.Printf("plotable y: %v (%v, %v)\n", plotableY, c.grid.Main.Work.Max.Y, c.grid.Main.Work.Min.Y)
   //}
 
   for _, x := range plotableX {
     displayPt := c.grid.DisplayPtFor(both.WorkPt{x, plotableY[0]})
     displayX/*, displayY*/ := displayPt.X/*, displayPt.Y*/
     //if !boundsAreSame {
-    // fmt.Printf("plotable x: %v, y:%v\n", displayX, displayPt.Y)
+    //  fmt.Printf("plotable x: %v, y:%v\n", displayX, displayPt.Y)
     //}
 
     //p5.Line(float64(c.grid.Main.Display.Min.X), float64(displayY), float64(c.grid.Main.Display.Max.X), float64(displayY))
@@ -76,7 +78,7 @@ func (c *MandelBothCmd) showGridLines() {
     displayPt := c.grid.DisplayPtFor(both.WorkPt{plotableX[0], y})
     /*displayX,*/ displayY := /*displayPt.X,*/ displayPt.Y
     //if !boundsAreSame {
-    // fmt.Printf("plotable x: %v, y:%v\n", displayPt.X, displayY)
+    //  fmt.Printf("plotable x: %v, y:%v\n", displayPt.X, displayY)
     //}
 
     p5.Line(float64(c.grid.Main.Display.Min.X), float64(displayY), float64(c.grid.Main.Display.Max.X), float64(displayY))

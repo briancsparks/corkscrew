@@ -71,8 +71,15 @@ func RunMandel(quit chan struct{}, tilechan chan *MandelDataMessage, params *Man
       pixel = bothPt.Display
       totalPixels += 1
 
-      z := complex(0.0, 0.0)
-      c := complex(bothPt.Work.X, bothPt.Work.Y)
+      z, c := complex(0.0, 0.0), complex(0.0, 0.0)
+      julia := false
+      if julia {
+        z = complex(bothPt.Work.X, bothPt.Work.Y)
+        _= c
+      } else {
+        z = complex(0.0, 0.0)
+        c = complex(bothPt.Work.X, bothPt.Work.Y)
+      }
 
       doneWithCurrent := false
       allDone := false
@@ -92,8 +99,13 @@ func RunMandel(quit chan struct{}, tilechan chan *MandelDataMessage, params *Man
             allDone = true
             break
           }
-          z = complex(0.0, 0.0)
-          c = complex(bothPt.Work.X, bothPt.Work.Y)
+
+          if julia {
+            z = complex(bothPt.Work.X, bothPt.Work.Y)
+          } else {
+            z = complex(0.0, 0.0)
+            c = complex(bothPt.Work.X, bothPt.Work.Y)
+          }
 
           // BBB
           if computeCount >= 540000 + 580 {
