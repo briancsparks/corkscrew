@@ -115,6 +115,31 @@ func (di *DisplayIterator) Next() *BothPt {
 
 // ------------------------------------------------------------------------------------------------------------
 
+func (b *Both) SplitSlice() []*Both {
+  myWorkRect := b.Main.Work
+  if b.Main.Work.Dx() > b.Main.Work.Dy() {
+    dleft, dright := b.Main.Display.SplitOnX()
+    //dright.Min.X = b.Main.Display.MidpointX()
+    //dleft.Max.X = dright.Min.X - 1
+
+    left := WkRect(myWorkRect.Min.X, myWorkRect.Min.Y, b.WorkPtFor(dleft.Max).X, myWorkRect.Max.Y)
+    right := WkRect(b.WorkPtFor(dright.Min).X, myWorkRect.Min.Y, myWorkRect.Max.X, myWorkRect.Max.Y)
+    return []*Both{MakeGrid(dleft, left, DoNotChange), MakeGrid(dright, right, DoNotChange)}
+
+  } else {
+    dtop, dbottom := b.Main.Display.SplitOnY()
+    //dbottom.Min.Y = b.Main.Display.MidpointY()
+    //dtop.Max.Y = dbottom.Min.Y
+
+    top := WkRect(myWorkRect.Min.X, myWorkRect.Min.Y, myWorkRect.Max.X, b.WorkPtFor(dtop.Max).Y)
+    bottom := WkRect(myWorkRect.Min.X, b.WorkPtFor(dbottom.Min).Y, myWorkRect.Max.X, myWorkRect.Max.Y)
+    return []*Both{MakeGrid(dtop, top, DoNotChange), MakeGrid(dbottom, bottom, DoNotChange)}
+  }
+
+}
+
+// ------------------------------------------------------------------------------------------------------------
+
 func (b *Both) Split() (*Both, *Both) {
   myWorkRect := b.Main.Work
   if b.Main.Work.Dx() > b.Main.Work.Dy() {

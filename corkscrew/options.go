@@ -5,11 +5,11 @@ package corkscrew
 // -------------------------------------------------------------------------------------------------------------------
 
 func init() {
-  configOptions.ShowGridLines   = true
-  configOptions.ShowAxis        = true
-  configOptions.ShowVertAxis    = true
-  configOptions.ShowHorizAxis   = true
-  configOptions.GridStyle       = byTens
+  Config.ShowGridLines   = true
+  Config.ShowAxis        = true
+  Config.ShowVertAxis    = true
+  Config.ShowHorizAxis   = true
+  Config.GridStyle       = byTens
 }
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ type ConfigOptions struct {
   // thin stroke
   // labeled (units)
 }
-var configOptions ConfigOptions
+var Config ConfigOptions
 
 // -------------------------------------------------------------------------------------------------------------------
 

@@ -96,9 +96,9 @@ func NewField(bounds image.Rectangle, /*width, height*/ left, top, right, bottom
   fmt.Printf("UnitsPerPixel: %v, PixelsPerUnit %v\n", unitsPerPixel, pixelsPerUnit)
 
   // Show the config
-  fmt.Printf("Show grid lines: %v\n", configOptions.ShowGridLines)
-  fmt.Printf("Show horizontal axis: %v\n", configOptions.ShowHorizAxis)
-  fmt.Printf("Show vertical axis: %v\n", configOptions.ShowVertAxis)
+  fmt.Printf("Show grid lines: %v\n", Config.ShowGridLines)
+  fmt.Printf("Show horizontal axis: %v\n", Config.ShowHorizAxis)
+  fmt.Printf("Show vertical axis: %v\n", Config.ShowVertAxis)
 
   return f
 }
@@ -226,18 +226,18 @@ func (f *Field) showGridLines() {
 
 func (f *Field) RenderLast() {
 
-  //configOptions.ShowHorizAxis = false
-  if configOptions.ShowHorizAxis {
+  //CorkscrewConfig.ShowHorizAxis = false
+  if Config.ShowHorizAxis {
     f.showHorizAxis()
   }
 
-  //configOptions.ShowVertAxis = false
-  if configOptions.ShowVertAxis {
+  //CorkscrewConfig.ShowVertAxis = false
+  if Config.ShowVertAxis {
     f.showVertAxis()
   }
 
-  //configOptions.ShowGridLines = false
-  if configOptions.ShowGridLines {
+  //CorkscrewConfig.ShowGridLines = false
+  if Config.ShowGridLines {
     f.showHorizAxis()
     f.showVertAxis()
     f.showGridLines()

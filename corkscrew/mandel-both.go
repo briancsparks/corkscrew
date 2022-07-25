@@ -30,14 +30,31 @@ func RunMandel(quit chan struct{}, tilechan chan *MandelDataMessage, params *Man
   c := colorful.WarmColor()
   imageUniform := &image.Uniform{C: color.RGBA{R: uint8(c.R * 255), G: uint8(c.G * 255), B: uint8(c.B * 255), A: 255}}
 
+  grids := cmd.grids[:]
+
   grid1, grid2 := bothGrid.Split()
-  gridA, gridB := grid1.Split()
-  cmd.grids = append(cmd.grids, gridA, gridB)
-  gridA, gridB = grid2.Split()
-  cmd.grids = append(cmd.grids, gridA, gridB)
+  //gridA, gridB := grid1.SplitSlice()
+  //grids = append(grids, gridA, gridB)
+  grids = append(grids, grid1.SplitSlice()...)
+  //gridA, gridB = grid2.SplitSlice()
+  //grids = append(grids, gridA, gridB)
+  grids = append(grids, grid2.SplitSlice()...)
   //grids := []*both.Both{grid1, grid2}
 
-  for _, grid := range cmd.grids {
+  grids2 := cmd.grids[:]
+  grids3 := bothGrid.SplitSlice()
+
+  for i := 0; i < 5; i++ {
+    for _, g := range grids3 {
+      grids2 = append(grids2, g.SplitSlice()...)
+    }
+    grids3 = grids2[:]
+    grids2 = nil
+  }
+
+  //grids2 = grids3[:]
+
+  for _, grid := range grids3 {
 
     wg := sync.WaitGroup{}
     wg.Add(1)
@@ -139,9 +156,9 @@ func RunMandel(quit chan struct{}, tilechan chan *MandelDataMessage, params *Man
 
         if doneWithCurrent || iterations >= maxIterations {
           iterCounts[iterations] += 1
-          if pixel.X == grid.Main.Display.Min.X {
-            tilechan <- &MandelDataMessage{grid.Id, pixImage, displayRect}
-          }
+          //if pixel.X == grid.Main.Display.Min.X {
+          //  tilechan <- &MandelDataMessage{grid.Id, pixImage, displayRect}
+          //}
 
           kolor := getColor(iterations, maxIterations)
           onePixRect := image.Rect(pixel.X, pixel.Y, pixel.X + 1, pixel.Y + 1)

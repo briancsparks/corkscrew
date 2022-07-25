@@ -20,11 +20,11 @@ func (c *MandelBothCmd) DrawP5() {
     }
   }()
 
-  if configOptions.ShowAxis {
+  if Config.ShowAxis {
     c.showAxes()
   }
 
-  if configOptions.ShowGridLines {
+  if Config.ShowGridLines {
     c.showGridLines()
   }
 }
